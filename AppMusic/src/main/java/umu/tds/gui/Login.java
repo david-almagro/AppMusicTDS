@@ -19,7 +19,6 @@ import javax.swing.border.CompoundBorder;
 import umu.tds.controlador.Controlador;
 
 import javax.swing.JFormattedTextField;
-import java.awt.GridLayout;
 import javax.swing.JSplitPane;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
