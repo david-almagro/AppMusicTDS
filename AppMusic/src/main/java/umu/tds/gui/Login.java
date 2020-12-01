@@ -1,4 +1,4 @@
-package gui;
+package umu.tds.gui;
 
 import java.awt.EventQueue;
 
