@@ -26,7 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 
-// A	bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+// A	bbbbbbbbbbbbbbb
 
 public class Register {
 
