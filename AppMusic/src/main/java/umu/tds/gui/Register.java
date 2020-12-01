@@ -15,8 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
 import javax.swing.JTextField;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 
 import com.toedter.calendar.JDateChooser;
