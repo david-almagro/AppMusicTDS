@@ -5,10 +5,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -17,11 +17,14 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+
 import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controlador.Controlador;
 
 import javax.swing.JPasswordField;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 public class Register {
@@ -34,6 +37,7 @@ public class Register {
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_2;
 	private JDateChooser dateFechaNac;
+	private JLabel lblContraseñaCheck;
 
 	/**
 	 * Launch the application.
@@ -65,43 +69,67 @@ public class Register {
 
 	private boolean validar() {
 		
-		boolean valido = false;
-		String pw1 = passwordField.getPassword().toString();
-		String pw2 = passwordField_2.getPassword().toString();
+		boolean valido = true;
+		String pw1 = new String(passwordField.getPassword());
+		String pw2 = new String(passwordField_2.getPassword());
+		Border redBorder = BorderFactory.createLineBorder(Color.RED);
+		Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
+		
+		
+
+		//Lo ponemos al color normal por si esta vez están bien, que no se queden en rojo
+		textUsuario.setBorder(blackBorder);
+		passwordField.setBorder(blackBorder);
+		passwordField_2.setBorder(blackBorder);
+		textNombre.setBorder(blackBorder);
+		textApellidos.setBorder(blackBorder);
+		dateFechaNac.setBorder(blackBorder);
+		textEmail.setBorder(blackBorder);
+		passwordField.setBorder(blackBorder);
+		passwordField_2.setBorder(blackBorder);
+		lblContraseñaCheck.setVisible(false);
 		
 		if(textUsuario.getText().isEmpty()) {
-			
-			
+			textUsuario.setBorder(redBorder);
+			valido = false;
 		}
 		
 
 		if(pw1.isEmpty()) {
-			
-			
+			passwordField.setBorder(redBorder);
+			valido = false;
 		}
 			
 		if(pw2.isEmpty()) {
-			
+			passwordField_2.setBorder(BorderFactory.createLineBorder(Color.RED));
+			valido = false;
 		}
 			
 		if(textNombre.getText().isEmpty()) {
-			
+			textNombre.setBorder(BorderFactory.createLineBorder(Color.RED));
+			valido = false;
 		}
 			
 		if(textApellidos.getText().isEmpty()) {
-			
+			textApellidos.setBorder(BorderFactory.createLineBorder(Color.RED));
+			valido = false;
 		}
 
 		if(dateFechaNac.getDateFormatString().isEmpty()) {
-			
+			dateFechaNac.setBorder(BorderFactory.createLineBorder(Color.RED));
+			valido = false;
 		}
 
 		if(textEmail.getText().isEmpty()) {
-			
+			textEmail.setBorder(BorderFactory.createLineBorder(Color.RED));
+			valido = false;
 		}
 
 		if(!pw1.equals(pw2)) {
-			
+			passwordField.setBorder(BorderFactory.createLineBorder(Color.RED));
+			passwordField_2.setBorder(BorderFactory.createLineBorder(Color.RED));
+			lblContraseñaCheck.setVisible(true);
+			valido = false;
 			
 		}
 		return valido;
@@ -257,6 +285,18 @@ public class Register {
 		gbc_passwordField_2.gridy = 7;
 		panel.add(passwordField_2, gbc_passwordField_2);
 		
+		lblContraseñaCheck = new JLabel("La contraseña debe ser la misma en ambos campos");
+		lblContraseñaCheck.setForeground(Color.RED);
+		lblContraseñaCheck.setFont(new Font("Tahoma", Font.BOLD, 16));
+		GridBagConstraints gbc_lblContraseñaCheck = new GridBagConstraints();
+		gbc_lblContraseñaCheck.anchor = GridBagConstraints.WEST;
+		gbc_lblContraseñaCheck.gridwidth = 3;
+		gbc_lblContraseñaCheck.insets = new Insets(0, 0, 5, 5);
+		gbc_lblContraseñaCheck.gridx = 2;
+		gbc_lblContraseñaCheck.gridy = 8;
+		lblContraseñaCheck.setVisible(false);
+		panel.add(lblContraseñaCheck, gbc_lblContraseñaCheck);
+		
 		JButton btnRegistrar = new JButton("Registrar");
 		btnRegistrar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnRegistrar = new GridBagConstraints();
@@ -269,7 +309,8 @@ public class Register {
 			public void actionPerformed(ActionEvent e) {
 				//boolean registrado = false;
 				//llamada al controlador, registrado = Controlador...
-				//boolean valido = validar();
+				boolean valido = validar();
+				if(valido) {
 				boolean registrado = Controlador.getControlador().registrar(textUsuario.getText(), new String(passwordField.getPassword()),
 						textEmail.getText(), textNombre.getText(), textApellidos.getText(), dateFechaNac.getDateFormatString());
 				if(registrado) {
@@ -280,6 +321,7 @@ public class Register {
 				}
 				else
 				JOptionPane.showMessageDialog(frame, "No se ha podido llevar a cabo el registro.\n","Error de registro", JOptionPane.ERROR_MESSAGE);
+			}
 			}
 		});
 		
