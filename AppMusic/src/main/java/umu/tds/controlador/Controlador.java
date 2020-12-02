@@ -1,7 +1,12 @@
 package umu.tds.controlador;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import umu.tds.dominio.Cancion;
+import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
 import umu.tds.dominio.Usuario;
 
@@ -57,4 +62,13 @@ public class Controlador {
 		return true;
 	}
 
+	//está bien? basado en ejercicio 6 boletin 4
+	public List<Cancion> busqueda(String nombre, String interprete, String estilo){
+		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
+											.filter(x -> nombre == null || x.getNombre().contentEquals(nombre))
+											.filter(x -> estilo == null || x.getNombre().contentEquals(estilo))
+											.filter(x -> interprete == null || x.getNombre().contentEquals(interprete)).collect(Collectors.toList());
+		return listaBusqueda;
+	}
+	
 }

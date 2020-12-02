@@ -2,12 +2,12 @@ package umu.tds.dominio;
 
 public class Cancion {
 	private String nombre;
-	private Interprete interprete;
-	private EstiloMusical estilo;
+	private String interprete;
+	private String estilo;
 	private String rutaFichero;
 	private int numReproducciones;
 	
-	public Cancion(String nombre, Interprete interprete, EstiloMusical estilo, String rutafichero) {
+	public Cancion(String nombre, String interprete, String estilo, String rutafichero) {
 		this.nombre = nombre;
 		this.interprete = interprete;
 		this.estilo = estilo;
@@ -21,11 +21,11 @@ public class Cancion {
 		return nombre;
 	}
 
-	public Interprete getInterprete() {
+	public String getInterprete() {
 		return interprete;
 	}
 
-	public EstiloMusical getEstilo() {
+	public String getEstilo() {
 		return estilo;
 	}
 

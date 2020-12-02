@@ -1,15 +1,16 @@
 package umu.tds.dominio;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CatalogoCanciones {
 	
 	//Patron Singleton de unica instanciaa
 	private static CatalogoCanciones unicaInstancia;
-	private HashMap<String, Cancion> mapaCanciones;  //mapa??? o Set
+	private ArrayList<Cancion> canciones;  //mapa??? o Set
 	
 	private CatalogoCanciones() {
-		mapaCanciones = new HashMap<String, Cancion>();
+		canciones = new ArrayList<Cancion>();
 		
 	}
 	
@@ -18,16 +19,18 @@ public class CatalogoCanciones {
 		return unicaInstancia;
 	}
 	
+	/*
 	public Cancion getCancion(String cancion) {
-		return mapaCanciones.get(cancion);
+		return canciones.get(cancion);
 	}
+	*/
 	
 	public void newCancion(Cancion cancion) {
-		mapaCanciones.put(cancion.getNombre(),cancion);
+		canciones.add(cancion);
 	}
 	
-	// ??? se puede ?
-	public HashMap<String, Cancion> getMapa() {
-		return new HashMap<String, Cancion>(mapaCanciones); //se devuelve una copia
+	// ??? se puede ?    //devolver lista o arraylist?
+	public List<Cancion> getCanciones() {
+		return new ArrayList<Cancion>(canciones); //se devuelve una copia
 	}
 }
