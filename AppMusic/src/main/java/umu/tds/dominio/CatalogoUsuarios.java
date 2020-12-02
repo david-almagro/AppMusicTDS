@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class CatalogoUsuarios {
 	
-	//Patr�n Singleton de �nica instancia
+	//Patron Singleton de unica instancia
 	private static CatalogoUsuarios unicaInstancia;
 	private HashMap<String, Usuario> mapaUsuarios;
 	

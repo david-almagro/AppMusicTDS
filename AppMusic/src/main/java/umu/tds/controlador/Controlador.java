@@ -7,7 +7,7 @@ import umu.tds.dominio.Usuario;
 
 public class Controlador {
 
-	//patr�n Singleton
+	//patron Singleton
 	private static Controlador controlador;
 	private Usuario user;
 	
