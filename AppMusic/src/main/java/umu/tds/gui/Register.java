@@ -38,7 +38,9 @@ public class Register {
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_2;
 	private JDateChooser dateFechaNac;
-	private JLabel lblContraseñaCheck;
+	private JLabel lblContrasenaCheck;
+	private JLabel lblExisteUsuario;
+	private JLabel lblExisteEmail;
 
 	/**
 	 * Launch the application.
@@ -73,6 +75,10 @@ public class Register {
 		boolean valido = true;
 		String pw1 = new String(passwordField.getPassword());
 		String pw2 = new String(passwordField_2.getPassword());
+		String user = textUsuario.getText();
+		String email = textEmail.getText();
+		//nos los guardamos para hacer checks y para enviarlos al controlador para saber si ya existen en nuestro catalogo de usuarios
+		
 		Border redBorder = BorderFactory.createLineBorder(Color.RED);
 		Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
 		
@@ -88,11 +94,23 @@ public class Register {
 		textEmail.setBorder(blackBorder);
 		passwordField.setBorder(blackBorder);
 		passwordField_2.setBorder(blackBorder);
-		lblContraseñaCheck.setVisible(false);
+		
+		lblContrasenaCheck.setVisible(false);
+		lblExisteUsuario.setVisible(false);
+		lblExisteEmail.setVisible(false);
 		
 		if(textUsuario.getText().isEmpty()) {
 			textUsuario.setBorder(redBorder);
 			valido = false;
+		}
+		else {
+			//comprobamos que el usuario no exista
+			if(Controlador.getControlador().existeUsuario(user)) {
+				lblExisteUsuario.setVisible(true);
+				textUsuario.setBorder(redBorder);
+				valido = false;
+			}
+
 		}
 		
 
@@ -125,11 +143,20 @@ public class Register {
 			textEmail.setBorder(BorderFactory.createLineBorder(Color.RED));
 			valido = false;
 		}
+		else {
+			//comprobamos que el correo sea único
+			if(Controlador.getControlador().existeEmail(email)) {
+				lblExisteEmail.setVisible(true);
+				textEmail.setBorder(redBorder);
+				valido = false;
+			}
+
+		}
 
 		if(!pw1.equals(pw2)) {
 			passwordField.setBorder(BorderFactory.createLineBorder(Color.RED));
 			passwordField_2.setBorder(BorderFactory.createLineBorder(Color.RED));
-			lblContraseñaCheck.setVisible(true);
+			lblContrasenaCheck.setVisible(true);
 			valido = false;
 			
 		}
@@ -286,17 +313,39 @@ public class Register {
 		gbc_passwordField_2.gridy = 7;
 		panel.add(passwordField_2, gbc_passwordField_2);
 		
-		lblContraseñaCheck = new JLabel("La contraseña debe ser la misma en ambos campos");
-		lblContraseñaCheck.setForeground(Color.RED);
-		lblContraseñaCheck.setFont(new Font("Tahoma", Font.BOLD, 16));
-		GridBagConstraints gbc_lblContraseñaCheck = new GridBagConstraints();
-		gbc_lblContraseñaCheck.anchor = GridBagConstraints.WEST;
-		gbc_lblContraseñaCheck.gridwidth = 3;
-		gbc_lblContraseñaCheck.insets = new Insets(0, 0, 5, 5);
-		gbc_lblContraseñaCheck.gridx = 2;
-		gbc_lblContraseñaCheck.gridy = 8;
-		lblContraseñaCheck.setVisible(false);
-		panel.add(lblContraseñaCheck, gbc_lblContraseñaCheck);
+		lblContrasenaCheck = new JLabel("La contraseña debe ser la misma en ambos campos");
+		lblContrasenaCheck.setForeground(Color.RED);
+		lblContrasenaCheck.setFont(new Font("Tahoma", Font.BOLD, 16));
+		GridBagConstraints gbc_lblContrasenaCheck = new GridBagConstraints();
+		gbc_lblContrasenaCheck.anchor = GridBagConstraints.WEST;
+		gbc_lblContrasenaCheck.gridwidth = 3;
+		gbc_lblContrasenaCheck.insets = new Insets(0, 0, 5, 5);
+		gbc_lblContrasenaCheck.gridx = 2;
+		gbc_lblContrasenaCheck.gridy = 8;
+		lblContrasenaCheck.setVisible(false);
+		panel.add(lblContrasenaCheck, gbc_lblContrasenaCheck);
+		
+		lblExisteEmail = new JLabel("Email en uso");
+		lblExisteEmail.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblExisteEmail.setForeground(Color.RED);
+		GridBagConstraints gbc_lblExisteEmail = new GridBagConstraints();
+		gbc_lblExisteEmail.anchor = GridBagConstraints.WEST;
+		gbc_lblExisteEmail.insets = new Insets(0, 0, 5, 5);
+		gbc_lblExisteEmail.gridx = 4;
+		gbc_lblExisteEmail.gridy = 5;
+		lblExisteEmail.setVisible(false); //panel invisible de primeras
+		panel.add(lblExisteEmail, gbc_lblExisteEmail);
+		
+		lblExisteUsuario = new JLabel("Nombre de usuario en uso");
+		lblExisteUsuario.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblExisteUsuario.setForeground(Color.RED);
+		GridBagConstraints gbc_lblExisteUsuario = new GridBagConstraints();
+		gbc_lblExisteUsuario.anchor = GridBagConstraints.WEST;
+		gbc_lblExisteUsuario.insets = new Insets(0, 0, 5, 5);
+		gbc_lblExisteUsuario.gridx = 4;
+		gbc_lblExisteUsuario.gridy = 6;
+		lblExisteUsuario.setVisible(false); //panel invisible de primeras
+		panel.add(lblExisteUsuario, gbc_lblExisteUsuario);
 		
 		JButton btnRegistrar = new JButton("Registrar");
 		btnRegistrar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -308,9 +357,11 @@ public class Register {
 		panel.add(btnRegistrar, gbc_btnRegistrar);
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//boolean registrado = false;
+
+				
 				//llamada al controlador, registrado = Controlador...
 				boolean valido = validar();
+				//validamos los campos de texto del registro
 				if(valido) {
 				boolean registrado = Controlador.getControlador().registrar(textUsuario.getText(), new String(passwordField.getPassword()),
 						textEmail.getText(), textNombre.getText(), textApellidos.getText(), dateFechaNac.getDateFormatString());
