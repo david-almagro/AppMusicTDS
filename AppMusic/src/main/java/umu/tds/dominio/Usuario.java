@@ -1,5 +1,7 @@
 package umu.tds.dominio;
 
+import java.util.ArrayList;
+
 public class Usuario {
 	
 	private String user;
@@ -10,6 +12,10 @@ public class Usuario {
 	private String apellidos;
 	private String fechaNac;
 	
+	private ArrayList<ListaCanciones> listas;
+	private ListaCanciones recientes;
+
+
 	public Usuario(String user, String password, String email, String nombre, String apellidos, String fechaNac) {
 		this.user = user;
 		this.password = password;
@@ -17,6 +23,8 @@ public class Usuario {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.fechaNac = fechaNac;
+		this.listas = new ArrayList<ListaCanciones>();
+		this.recientes = new ListaCanciones("Recientes");
 	}
 
 	public String getUser() {
@@ -43,6 +51,13 @@ public class Usuario {
 		return fechaNac;
 	}
 	
+	public ArrayList<ListaCanciones> getListas() {
+		return listas;
+	}
+
+	public ListaCanciones getRecientes() {
+		return recientes;
+	}
 	
 	
 }

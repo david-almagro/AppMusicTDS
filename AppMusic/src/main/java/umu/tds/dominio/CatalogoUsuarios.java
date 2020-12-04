@@ -4,7 +4,8 @@ import java.util.HashMap;
 
 public class CatalogoUsuarios {
 	
-	private static CatalogoUsuarios catalogo;
+	//Patron Singleton de unica instanciaa
+	private static CatalogoUsuarios unicaInstancia;
 	private HashMap<String, Usuario> mapaUsuarios;
 	
 	private CatalogoUsuarios() {
@@ -12,9 +13,9 @@ public class CatalogoUsuarios {
 		
 	}
 	
-	public static CatalogoUsuarios getCatalogo() {
-		if(catalogo==null) catalogo = new CatalogoUsuarios();
-		return catalogo;
+	public static CatalogoUsuarios getUnicaInstancia() {
+		if(unicaInstancia==null) unicaInstancia= new CatalogoUsuarios();
+		return unicaInstancia;
 	}
 	
 	public Usuario getUsuario(String user) {
@@ -23,5 +24,10 @@ public class CatalogoUsuarios {
 	
 	public void newUsuario(Usuario usuario) {
 		mapaUsuarios.put(usuario.getUser(),usuario);
+	}
+	
+	// ??? se puede ?
+	public HashMap<String, Usuario> getMapa() {
+		return new HashMap<String, Usuario>(mapaUsuarios); //se devuelve una copia
 	}
 }
