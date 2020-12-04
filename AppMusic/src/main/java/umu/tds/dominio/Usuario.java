@@ -12,6 +12,8 @@ public class Usuario {
 	private String apellidos;
 	private String fechaNac;
 	
+	private boolean premium;
+	
 	private ArrayList<ListaCanciones> listas;
 	private ListaCanciones recientes;
 
@@ -57,6 +59,10 @@ public class Usuario {
 
 	public ListaCanciones getRecientes() {
 		return recientes;
+	}
+	
+	public boolean isPremium() {
+		return premium;
 	}
 	
 	

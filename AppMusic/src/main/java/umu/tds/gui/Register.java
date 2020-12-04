@@ -25,9 +25,6 @@ import javax.swing.JPasswordField;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
-
-// adsfasdfasdfasdfssssssssssssssssssssss
-
 public class Register {
 
 	private JFrame frame;
