@@ -1,6 +1,7 @@
 package umu.tds.dominio;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Usuario {
 	
@@ -14,8 +15,8 @@ public class Usuario {
 	
 	private boolean premium;
 	
-	private ArrayList<ListaCanciones> listas;
-	private ListaCanciones recientes;
+	private LinkedList<ListaCanciones> listas;
+	private ListaRecientes recientes;
 
 
 	public Usuario(String user, String password, String email, String nombre, String apellidos, String fechaNac) {
@@ -25,8 +26,8 @@ public class Usuario {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.fechaNac = fechaNac;
-		this.listas = new ArrayList<ListaCanciones>();
-		this.recientes = new ListaCanciones("Recientes");
+		this.listas = new LinkedList<ListaCanciones>();
+		this.recientes = new ListaRecientes("Recientes");
 	}
 
 	public String getUser() {
@@ -53,11 +54,11 @@ public class Usuario {
 		return fechaNac;
 	}
 	
-	public ArrayList<ListaCanciones> getListas() {
+	public LinkedList<ListaCanciones> getListas() {
 		return listas;
 	}
 
-	public ListaCanciones getRecientes() {
+	public ListaCanciones getRecientes() { //no hace falta devolver ListaReciente, pues solo cambia la implementación, y eso no afecta en nada a su uso
 		return recientes;
 	}
 	
@@ -65,5 +66,9 @@ public class Usuario {
 		return premium;
 	}
 	
+	//añadir cancion a recientes
+	public void addRecientes(Cancion cancion) {
+		recientes.addCancion(cancion);
+	}
 	
 }

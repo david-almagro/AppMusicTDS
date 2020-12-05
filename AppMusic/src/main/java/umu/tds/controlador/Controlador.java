@@ -2,12 +2,14 @@ package umu.tds.controlador;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import umu.tds.dominio.Cancion;
 import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
+import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
 
 public class Controlador {
@@ -28,6 +30,16 @@ public class Controlador {
 	public Usuario getUser() {
 		return user;
 	}
+	
+	
+	public LinkedList<ListaCanciones> getListas() {
+		return user.getListas();
+	}
+	
+	public ListaCanciones getReciente() {
+		return user.getRecientes();
+	}
+	
 	
 	public boolean existeUsuario(String usuario) {
 		return CatalogoUsuarios.getUnicaInstancia().getUsuario(usuario) != null;
@@ -58,7 +70,7 @@ public class Controlador {
 		if(usuario ==null || !usuario.getPassword().equals(password))
 			return false;
 		
-		this.user=usuario;
+		this.user=usuario; //nos guardamos el usuario que se ha logueado en el controlador
 		return true;
 	}
 
@@ -71,4 +83,11 @@ public class Controlador {
 		return listaBusqueda;
 	}
 	
+
+	public void reproducirCancion(Usuario usuario, Cancion cancion) { //placeholder que solo guarda en recientes
+		usuario.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
+		
+		// ... reproducir etc
+	}
+
 }

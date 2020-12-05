@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class ListaCanciones {
 	private String nombre;
-	private LinkedList<Cancion> canciones;
+	protected LinkedList<Cancion> canciones;
 	
 	public ListaCanciones(String nombre) {
 		this.nombre = nombre;
@@ -17,5 +17,9 @@ public class ListaCanciones {
 
 	public String getNombre() {
 		return nombre;
+	}
+	
+	public void addCancion(Cancion cancion) {
+		canciones.add(cancion);
 	}
 }
