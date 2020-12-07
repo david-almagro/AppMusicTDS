@@ -54,6 +54,10 @@ public class Controlador {
 		return false; //si no encuentra ninguno que sea igual al que se pasa, se retorna false, no existe el email
 	}
 	
+	public boolean existeLista(String lista) {
+		return user.getListas().stream().anyMatch(x -> x.getNombre().contentEquals(lista));
+	}
+	
 	public boolean registrar(String user, String password, String email, String nombre, String apellidos, String fechaNac) {
 		if (!existeUsuario(user))
 		{

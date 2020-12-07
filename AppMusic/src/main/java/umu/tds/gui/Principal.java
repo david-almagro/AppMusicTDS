@@ -26,10 +26,13 @@ import java.awt.event.MouseEvent;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
-import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.CardLayout;
+import javax.swing.JToolBar;
+import javax.swing.DefaultComboBoxModel;
 
 
 public class Principal {
@@ -40,6 +43,11 @@ public class Principal {
 	private JTextField txtTitulo;
 	private JTextField txtInterprete;
 	private JTable table_1;
+	private JTextField textField;
+	private JTextField textInterpreteNuevaLista;
+	private JTextField textTituloNuevaLista;
+	private JTable table;
+	private JTable table_2;
 
 	/**
 	 * Launch the application.
@@ -108,29 +116,31 @@ public class Principal {
     	
     	
     	//Layerede Panel central
-    	JLayeredPane layeredPane = new JLayeredPane();
-    	frame.getContentPane().add(layeredPane, BorderLayout.CENTER);
-    	layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.Y_AXIS));
+
+		JPanel panelCentral = new JPanel();
+		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
+    	CardLayout cardLayout = new CardLayout();
+    	panelCentral.setLayout(cardLayout);
     	
-    	JPanel panel_1 = new JPanel();
-    	layeredPane.add(panel_1);
-		panel_1.setVisible(false);
-    	panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.PAGE_AXIS));
+    	JPanel panel_Explorar = new JPanel();
+    	panelCentral.add(panel_Explorar, "card_Explorar");
+		panel_Explorar.setVisible(false);
+    	panel_Explorar.setLayout(new BoxLayout(panel_Explorar, BoxLayout.PAGE_AXIS));
     	
     	String[] columns = {"título", "intérprete"};
     	DefaultTableModel modelo = new DefaultTableModel();
     	for (String s : columns) {modelo.addColumn(s);}
     	
-    	JPanel panel_2 = new JPanel();
-    	panel_2.setAlignmentX(0.0f);
-    	panel_2.setAlignmentY(0.0f);
-    	panel_1.add(panel_2);
-    	GridBagLayout gbl_panel_2 = new GridBagLayout();
-    	gbl_panel_2.columnWidths = new int[]{24, 117, 114, 123, 0, 0};
-    	gbl_panel_2.rowHeights = new int[]{19, 0, 0, 0, 0};
-    	gbl_panel_2.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-    	gbl_panel_2.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-    	panel_2.setLayout(gbl_panel_2);
+    	JPanel panel_Explorar_centro = new JPanel();
+    	panel_Explorar_centro.setAlignmentX(0.0f);
+    	panel_Explorar_centro.setAlignmentY(0.0f);
+    	panel_Explorar.add(panel_Explorar_centro);
+    	GridBagLayout gbl_panel_Explorar_centro = new GridBagLayout();
+    	gbl_panel_Explorar_centro.columnWidths = new int[]{24, 117, 114, 123, 0, 0};
+    	gbl_panel_Explorar_centro.rowHeights = new int[]{19, 0, 0, 0, 0};
+    	gbl_panel_Explorar_centro.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+    	gbl_panel_Explorar_centro.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+    	panel_Explorar_centro.setLayout(gbl_panel_Explorar_centro);
     	
     	txtTitulo = new JTextField();
     	txtTitulo.setText("Título");
@@ -139,7 +149,7 @@ public class Principal {
     	gbc_txtTitulo.fill = GridBagConstraints.HORIZONTAL;
     	gbc_txtTitulo.gridx = 1;
     	gbc_txtTitulo.gridy = 0;
-    	panel_2.add(txtTitulo, gbc_txtTitulo);
+    	panel_Explorar_centro.add(txtTitulo, gbc_txtTitulo);
     	txtTitulo.setColumns(10);
     	
     	txtInterprete = new JTextField();
@@ -149,17 +159,18 @@ public class Principal {
     	gbc_txtInterprete.fill = GridBagConstraints.HORIZONTAL;
     	gbc_txtInterprete.gridx = 2;
     	gbc_txtInterprete.gridy = 0;
-    	panel_2.add(txtInterprete, gbc_txtInterprete);
+    	panel_Explorar_centro.add(txtInterprete, gbc_txtInterprete);
     	txtInterprete.setColumns(10);
     	
-    	String[] EjemploEstilos = {"-","Rock", "Pop", "Electrónica", "Trap Refachero"};
-    	JComboBox<String> comboBox = new JComboBox<String>(EjemploEstilos);											//TODO: JComboBox con estilos automáticos | ¿Quiźa función getEstilos()?
+    	
+    	JComboBox comboBox = new JComboBox();
+    	comboBox.setModel(new DefaultComboBoxModel(new String[] {"Jazz", "Pop", "Electronica", "Punk"}));
     	GridBagConstraints gbc_comboBox = new GridBagConstraints();
     	gbc_comboBox.insets = new Insets(0, 0, 5, 5);
     	gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
     	gbc_comboBox.gridx = 3;
     	gbc_comboBox.gridy = 0;
-    	panel_2.add(comboBox, gbc_comboBox);  	
+    	panel_Explorar_centro.add(comboBox, gbc_comboBox);
     	JButton btnBuscar = new JButton("Buscar");
   
     	GridBagConstraints gbc_btnBuscar = new GridBagConstraints();
@@ -168,14 +179,14 @@ public class Principal {
     	gbc_btnBuscar.insets = new Insets(0, 0, 5, 5);
     	gbc_btnBuscar.gridx = 1;
     	gbc_btnBuscar.gridy = 1;
-    	panel_2.add(btnBuscar, gbc_btnBuscar);
+    	panel_Explorar_centro.add(btnBuscar, gbc_btnBuscar);
     	
     	JButton btnCancelar = new JButton("Cancelar");
     	GridBagConstraints gbc_btnCancelar = new GridBagConstraints();
     	gbc_btnCancelar.insets = new Insets(0, 0, 5, 5);
     	gbc_btnCancelar.gridx = 3;
     	gbc_btnCancelar.gridy = 1;
-    	panel_2.add(btnCancelar, gbc_btnCancelar);
+    	panel_Explorar_centro.add(btnCancelar, gbc_btnCancelar);
     	
     	JPanel Music_Player = new JPanel();
     	GridBagConstraints gbc_Music_Player = new GridBagConstraints();
@@ -184,7 +195,7 @@ public class Principal {
     	gbc_Music_Player.fill = GridBagConstraints.BOTH;
     	gbc_Music_Player.gridx = 1;
     	gbc_Music_Player.gridy = 2;
-    	panel_2.add(Music_Player, gbc_Music_Player);
+    	panel_Explorar_centro.add(Music_Player, gbc_Music_Player);
     	GridBagLayout gbl_Music_Player = new GridBagLayout();
     	gbl_Music_Player.columnWidths = new int[]{0, 0, 0, 0};
     	gbl_Music_Player.rowHeights = new int[]{0, 0, 0, 0};
@@ -300,94 +311,237 @@ public class Principal {
     	gbc_btnForward.gridy = 2;
     	Music_Player.add(btnForward, gbc_btnForward);
     	btnForward.setIcon(new ImageIcon("resources/iconos/Siguiente.png"));
-        panel_1.setOpaque(true);
+        panel_Explorar.setOpaque(true);
+        
+        JPanel panel_NuevaLista = new JPanel();
+        panelCentral.add(panel_NuevaLista, "card_NuevaLista");
+        panel_NuevaLista.setLayout(new BorderLayout(0, 0));
+        
+        JPanel panel = new JPanel();
+        panel_NuevaLista.add(panel, BorderLayout.NORTH);
+        
+        textField = new JTextField();
+        textField.setText("Lista Nueva");
+        textField.setColumns(25);
+        panel.add(textField);
+        
+        JButton CrearLista = new JButton("Crear");
+        panel.add(CrearLista);
+        
+        JPanel panel_CreacionLista = new JPanel();
+        panel_NuevaLista.add(panel_CreacionLista, BorderLayout.CENTER);
+        GridBagLayout gbl_panel_CreacionLista = new GridBagLayout();
+        gbl_panel_CreacionLista.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_CreacionLista.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_CreacionLista.columnWeights = new double[]{0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panel_CreacionLista.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        panel_CreacionLista.setLayout(gbl_panel_CreacionLista);
+		panel_CreacionLista.setVisible(false);
 
-        JPanel panel_3 = new JPanel();
-        panel_1.add(panel_3);
-        GridBagLayout gbl_panel_3 = new GridBagLayout();
-        gbl_panel_3.columnWidths = new int[]{0};
-        gbl_panel_3.rowHeights = new int[]{0};
-        gbl_panel_3.columnWeights = new double[]{Double.MIN_VALUE};
-        gbl_panel_3.rowWeights = new double[]{Double.MIN_VALUE};
-        panel_3.setLayout(gbl_panel_3);
+        CrearLista.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		String nuevalistaNombre = textField.getText();
+        		if (controlador.existeLista(textField.getText())) {
+        			JOptionPane.showMessageDialog(frame, "Ya existe una lista con ese nombre", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
+        		}
+        		else {
+					int creacionLista = JOptionPane.showConfirmDialog(frame,"¿Crear la lista \"" + nuevalistaNombre +"\"?" ,"Nueva lista", JOptionPane.YES_NO_CANCEL_OPTION);
+					if(creacionLista == JOptionPane.OK_OPTION) {
+						panel_CreacionLista.setVisible(true);
+					}
+        		}
+        	}
+        });
+        
+        textInterpreteNuevaLista = new JTextField();
+        GridBagConstraints gbc_textInterpreteNuevaLista = new GridBagConstraints();
+        gbc_textInterpreteNuevaLista.insets = new Insets(0, 0, 5, 5);
+        gbc_textInterpreteNuevaLista.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textInterpreteNuevaLista.gridx = 1;
+        gbc_textInterpreteNuevaLista.gridy = 1;
+        panel_CreacionLista.add(textInterpreteNuevaLista, gbc_textInterpreteNuevaLista);
+        textInterpreteNuevaLista.setColumns(10);
+        
+        textTituloNuevaLista = new JTextField();
+        GridBagConstraints gbc_textTituloNuevaLista = new GridBagConstraints();
+        gbc_textTituloNuevaLista.insets = new Insets(0, 0, 5, 5);
+        gbc_textTituloNuevaLista.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textTituloNuevaLista.gridx = 2;
+        gbc_textTituloNuevaLista.gridy = 1;
+        panel_CreacionLista.add(textTituloNuevaLista, gbc_textTituloNuevaLista);
+        textTituloNuevaLista.setColumns(10);
+        
+        JComboBox comboBox_1 = new JComboBox();
+        comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Jazz", "Pop", "Rock", "Punk", "Electronica"}));
+        GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
+        gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
+        gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
+        gbc_comboBox_1.gridx = 3;
+        gbc_comboBox_1.gridy = 1;
+        panel_CreacionLista.add(comboBox_1, gbc_comboBox_1);
+        
+        JButton BuscarNuevaLista = new JButton("Buscar");
+        GridBagConstraints gbc_BuscarNuevaLista = new GridBagConstraints();
+        gbc_BuscarNuevaLista.gridwidth = 2;
+        gbc_BuscarNuevaLista.insets = new Insets(0, 0, 5, 5);
+        gbc_BuscarNuevaLista.gridx = 4;
+        gbc_BuscarNuevaLista.gridy = 1;
+        panel_CreacionLista.add(BuscarNuevaLista, gbc_BuscarNuevaLista);
+        
+        JScrollPane scrollPane_1 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
+        gbc_scrollPane_1.gridwidth = 2;
+        gbc_scrollPane_1.gridheight = 5;
+        gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_1.gridx = 1;
+        gbc_scrollPane_1.gridy = 2;
+        panel_CreacionLista.add(scrollPane_1, gbc_scrollPane_1);
+        
+        table = new JTable();
+        table.setModel(new DefaultTableModel(
+        	new Object[][] {
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        	},
+        	new String[] {
+        		"New column", "New column"
+        	}
+        ));
+        scrollPane_1.setViewportView(table);
+        
+        JScrollPane scrollPane_2 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
+        gbc_scrollPane_2.gridwidth = 2;
+        gbc_scrollPane_2.gridheight = 5;
+        gbc_scrollPane_2.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane_2.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_2.gridx = 4;
+        gbc_scrollPane_2.gridy = 2;
+        panel_CreacionLista.add(scrollPane_2, gbc_scrollPane_2);
+        
+        table_2 = new JTable();
+        table_2.setModel(new DefaultTableModel(
+        	new Object[][] {
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        		{null, null},
+        	},
+        	new String[] {
+        		"New column", "New column"
+        	}
+        ));
+        scrollPane_2.setViewportView(table_2);
+        
+        JButton btnleftleft = new JButton("<<");
+        GridBagConstraints gbc_btnleftleft = new GridBagConstraints();
+        gbc_btnleftleft.insets = new Insets(0, 0, 5, 5);
+        gbc_btnleftleft.gridx = 3;
+        gbc_btnleftleft.gridy = 3;
+        panel_CreacionLista.add(btnleftleft, gbc_btnleftleft);
+        
+        JButton btnRightRight = new JButton(">>");
+        GridBagConstraints gbc_btnRightRight = new GridBagConstraints();
+        gbc_btnRightRight.insets = new Insets(0, 0, 5, 5);
+        gbc_btnRightRight.gridx = 3;
+        gbc_btnRightRight.gridy = 4;
+        panel_CreacionLista.add(btnRightRight, gbc_btnRightRight);
+        
+        JButton btnAceptarNuevaLista = new JButton("Aceptar");
+        GridBagConstraints gbc_btnAceptarNuevaLista = new GridBagConstraints();
+        gbc_btnAceptarNuevaLista.insets = new Insets(0, 0, 0, 5);
+        gbc_btnAceptarNuevaLista.gridx = 2;
+        gbc_btnAceptarNuevaLista.gridy = 7;
+        panel_CreacionLista.add(btnAceptarNuevaLista, gbc_btnAceptarNuevaLista);
+        
+        JButton btnCancelarNuevaLista = new JButton("Cancelar");
+        GridBagConstraints gbc_btnCancelarNuevaLista = new GridBagConstraints();
+        gbc_btnCancelarNuevaLista.insets = new Insets(0, 0, 0, 5);
+        gbc_btnCancelarNuevaLista.gridx = 4;
+        gbc_btnCancelarNuevaLista.gridy = 7;
+        panel_CreacionLista.add(btnCancelarNuevaLista, gbc_btnCancelarNuevaLista);
+    	panel_NuevaLista.setVisible(false);
+		
+    	
+    	//BOTONERA
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		toolBar.setToolTipText("");
+		toolBar.setOrientation(SwingConstants.VERTICAL);
+		frame.getContentPane().add(toolBar, BorderLayout.WEST);
+		
+		JButton btnExplorar = new JButton("Explorar");
+		btnExplorar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				cardLayout.show(panelCentral, "card_Explorar");
+    	    	Music_Player.setVisible(false);
 
-    	
-    	//Botonera izquierda
-    	JPanel panel = new JPanel();
-    	frame.getContentPane().add(panel, BorderLayout.WEST);
-    	GridBagLayout gbl_panel = new GridBagLayout();
-    	gbl_panel.columnWidths = new int[]{80, 0};
-    	gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
-    	gbl_panel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-    	gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-    	panel.setLayout(gbl_panel);
-    	
-    	//Botón "Explorar"
-    	JButton btnNewButton = new JButton("Explorar");
-    	GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-    	gbc_btnNewButton.fill = GridBagConstraints.BOTH;
-    	gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
-    	gbc_btnNewButton.gridx = 0;
-    	gbc_btnNewButton.gridy = 0;
-    	panel.add(btnNewButton, gbc_btnNewButton);
-    	btnNewButton.setIcon(new ImageIcon("resources/iconos/Explorar.png"));
-    	//On Click
-    	btnNewButton.addMouseListener(new MouseAdapter() {
-    		@Override
-    		public void mouseClicked(MouseEvent e) {
-    			panel_1.setVisible(true);
-    		}
-    	});
-    	
-    	//Nueva lista"
-		JButton btnNewButton_1 = new JButton("Nueva lista");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 1;
-		panel.add(btnNewButton_1, gbc_btnNewButton_1);
-		btnNewButton_1.setIcon(new ImageIcon("resources/iconos/Nueva_lista.png"));
-		//On Click
-    	btnNewButton_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-    			panel_1.setVisible(false);
 			}
 		});
-    	
-    	//Botón "Reciente"
-		JButton btnNewButton_2 = new JButton("Reciente");
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_2.gridx = 0;
-		gbc_btnNewButton_2.gridy = 2;
-		panel.add(btnNewButton_2, gbc_btnNewButton_2);
-		btnNewButton_2.setIcon(new ImageIcon("resources/iconos/Reciente.png"));
-		//On Click
-    	btnNewButton_2.addMouseListener(new MouseAdapter() {
+		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Explorar.png"));
+		toolBar.add(btnExplorar);
+		
+		JButton btnNuevaLista = new JButton("Nueva lista");
+		btnNuevaLista.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-    			panel_1.setVisible(false);
+				cardLayout.show(panelCentral, "card_NuevaLista");
+				panel_CreacionLista.setVisible(false);
+
+
 			}
 		});
-    	
-    	//Botón "Mis listas"
-		JButton btnNewButton_3 = new JButton("Mis listas");
-		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-		gbc_btnNewButton_3.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton_3.gridx = 0;
-		gbc_btnNewButton_3.gridy = 3;
-		panel.add(btnNewButton_3, gbc_btnNewButton_3);
-		btnNewButton_3.setIcon(new ImageIcon("resources/iconos/Mis_listas.png"));
-		//On Click
-    	btnNewButton_3.addMouseListener(new MouseAdapter() {
+		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Nueva_Lista.png"));
+		toolBar.add(btnNuevaLista);
+		
+		JButton btnReciente = new JButton("Reciente");
+		btnReciente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-    			panel_1.setVisible(false);
 			}
 		});
+		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Reciente.png"));
+		toolBar.add(btnReciente);
+		
+		JButton btnMisListas = new JButton("Mis listas");
+		btnMisListas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
+		toolBar.add(btnMisListas);
+		
     	
 
 
