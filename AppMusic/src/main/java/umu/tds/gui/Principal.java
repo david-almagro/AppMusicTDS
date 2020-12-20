@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.dominio.Cancion;
 
 //import umu.tds.controlador.Controlador;
 
@@ -23,6 +24,9 @@ import java.awt.Insets;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.LinkedList;
+
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -33,6 +37,7 @@ import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JToolBar;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ListSelectionModel;
 
 
 public class Principal {
@@ -42,7 +47,7 @@ public class Principal {
 	private JFrame frame;
 	private JTextField txtTitulo;
 	private JTextField txtInterprete;
-	private JTable table_1;
+	private JTable tablaCanciones;
 	private JTextField textField;
 	private JTextField textInterpreteNuevaLista;
 	private JTextField textTituloNuevaLista;
@@ -83,6 +88,12 @@ public class Principal {
 	private void initialize() {
 		//obtención del controlador
 		Controlador controlador = Controlador.getControlador(); 
+		
+		try {
+			controlador.inicializarCancionesLocales();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, minWidth, minHeight);
@@ -222,45 +233,41 @@ public class Principal {
     	gbc_scrollPane.gridy = 0;
     	Music_Player.add(scrollPane, gbc_scrollPane);
     	
-    	table_1 = new JTable();
-    	table_1.setModel(new DefaultTableModel(
-    		new Object[][] {
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    			{null, null},
-    		},
+    	//####################################
+    	// 		todo esto no va aquí pero mola ir viendo la tabla con algo en vez de vacía
+    	//####################################
+    	//	TODO: Cambiar la tabla para que contenga una columna oculta con el id de la canción
+    	//	para así luego pedir el id a la tabla y pedir su reproducción al controlador.
+    	// 	Mejor que pedirle una canción por el título.
+    	//  https://stackoverflow.com/questions/25975459/how-to-hide-the-jtable-column-data
+
+    	LinkedList<Cancion> c = new LinkedList<Cancion>();
+    	try {
+			c = (LinkedList<Cancion>) controlador.inicializarCancionesLocales();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	
+    	tablaCanciones = new JTable();
+    	tablaCanciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    	tablaCanciones.setModel(new DefaultTableModel(
     		new String[] {
     			"Título", "Intérprete"
-    		}
+    		}, 0
     	));
-    	scrollPane.setViewportView(table_1);
+    	
+    	//Añadir filas por canción
+    	DefaultTableModel modeloTablaCanciones = (DefaultTableModel) tablaCanciones.getModel();
+    	for(Cancion s : c) {
+    		modeloTablaCanciones.addRow(new Object[] {s.getNombre(), s.getInterprete()});
+    	}
+    	
+    	//####################################
+    	// 		mover todo esto
+    	//####################################
+    			
+    	scrollPane.setViewportView(tablaCanciones);
     	
     	//Botón retroceder
     	JButton btnBack = new JButton();
@@ -288,16 +295,30 @@ public class Principal {
     	btnPlay.addMouseListener(new MouseAdapter() {
 			boolean isPlaying = false;
     		@Override
-			public void mouseClicked(MouseEvent e) {										//< - - - - TODO: Lógica para reproducir canciones y tal...
+			public void mouseClicked(MouseEvent e) {					
 
     			if(isPlaying) {
 					isPlaying = false;
 					btnPlay.setIcon(playIcon);
-
+					controlador.pararCancion();
 				}
 				else {
 					isPlaying = true;
 					btnPlay.setIcon(stopIcon);
+					int selectedRow = tablaCanciones.getSelectedRow();
+					System.out.println("Cancion seleccionada : " + modeloTablaCanciones.getValueAt(selectedRow, 0));  //TODO: quitar el sysout (?)
+
+					//TODO: en un futuro se pedirá "reproducción por id" al controlador
+					// La idea es tener los id escondidos dentro de la tabla.
+					// estas siguientes lineas están mal pero representan funcionalidad por ahora.
+					Cancion playedSong;
+					try {
+						playedSong = controlador.inicializarCancionesLocales().get(selectedRow);
+					} catch (IOException e1) {
+						playedSong = null;
+						e1.printStackTrace();
+					} 
+					controlador.reproducirCancion(controlador.getUser(), playedSong);
 
 				}
 			}

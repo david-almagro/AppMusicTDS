@@ -1,11 +1,27 @@
 package umu.tds.controlador;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import umu.tds.dao.AdaptadorCancionDAO;
+import umu.tds.dao.AdaptadorUsuarioDAO;
+import umu.tds.dao.FactoriaDAO;
 import umu.tds.dominio.Cancion;
 import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
@@ -18,10 +34,24 @@ public class Controlador {
 	private static Controlador controlador;
 	private Usuario user;
 	
+	//private JFrame frmReproductorDeCanciones;
+	//private JTextField textURL;
+	private FactoriaDAO factoriaDao;
+
+	private MediaPlayer mediaPlayer;
+	private String tempPath = "temp";
+
+	
 	private Controlador() {
-		
+
 	}
 	
+	//No me acuerdo de donde me he sacado esta función
+	private void inicializarAdaptadores() {
+		//AdaptadorUsuarioDAO adaptadorUsuario = new AdaptadorUsuarioDAO();
+		AdaptadorCancionDAO adaptadorCancion = new AdaptadorCancionDAO();
+	}
+
 	public static Controlador getControlador() {
 		if(controlador==null) controlador = new Controlador();
 		return controlador;
@@ -71,9 +101,10 @@ public class Controlador {
 	
 	public boolean login(String user, String password) {
 		Usuario usuario = CatalogoUsuarios.getUnicaInstancia().getUsuario(user);
-		if(usuario ==null || !usuario.getPassword().equals(password))
+		if(usuario == null || !usuario.getPassword().equals(password))
 			return false;
 		
+		//
 		this.user=usuario; //nos guardamos el usuario que se ha logueado en el controlador
 		return true;
 	}
@@ -89,9 +120,68 @@ public class Controlador {
 	
 
 	public void reproducirCancion(Usuario usuario, Cancion cancion) { //placeholder que solo guarda en recientes
-		usuario.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
+		// TODO: esta línea da null pointer exception
+		//usuario.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
 		
-		// ... reproducir etc
+		URL uri = null;
+		try {
+			com.sun.javafx.application.PlatformImpl.startup(() -> {
+			});
+			
+			//Transformación del filepath a objeto URL
+			File fich = new File(cancion.getRutaFichero());
+			uri = fich.toURI().toURL();
+			System.out.println();
+			System.setProperty("java.io.tmpdir", tempPath);
+			Path mp3 = Files.createTempFile("now-playing", ".mp3");
+
+			System.out.println(mp3.getFileName());
+			try (InputStream stream = uri.openStream()) {
+				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
+			}
+			System.out.println("finished-copy: " + mp3.getFileName());
+
+			Media media = new Media(mp3.toFile().toURI().toString());
+			mediaPlayer = new MediaPlayer(media);
+			
+			mediaPlayer.play();
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
+	public void pararCancion() {
+		if (mediaPlayer != null) mediaPlayer.stop();
+		File directorio = new File(tempPath);
+		String[] files = directorio.list();
+		for (String archivo : files) {
+			File fichero = new File(tempPath + File.separator + archivo);
+			fichero.delete();
+		}
+	}
+	
+	public LinkedList<Cancion> inicializarCancionesLocales() throws IOException {
+		//Esto no va aquí pero se usa esta funcion temporalmente para comprobar el funcionamiento del código.
+		//TODO: Cambiar esto.
+		File srcCanciones = new File("resources/canciones");
+		File[] carpetasCanciones = srcCanciones.listFiles();
+		LinkedList<Cancion> canciones = new LinkedList<Cancion>();
+		
+		for (File f : carpetasCanciones) {
+			File[] cancionesPorEstilo = f.listFiles();
+		
+			for (File s : cancionesPorEstilo) {
+				String[] autorTitulo = s.getName().split("-");
+				Cancion cancion = new Cancion(autorTitulo[1], autorTitulo[0], f.getName().toLowerCase(), s.getPath());
+				canciones.add(cancion);
+			}
+		}
+		return canciones;
+	}
+	
 }
+
+	
+

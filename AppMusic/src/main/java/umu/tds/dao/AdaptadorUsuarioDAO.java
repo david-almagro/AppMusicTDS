@@ -13,20 +13,17 @@ import tds.driver.ServicioPersistencia;
 
 //Adaptador de la nterfaz de UsuarioDAO basada en el esquema de "TDS-Guia-Desarrollo-CasoPractico-Presentacion.pdf" de la página 34
 
-public class AdaptadorUsuarioDAO implements UsuarioDAO {
+public abstract class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 
 	private ServicioPersistencia servicioPersistencia;
 	
-	
-	
 	public AdaptadorUsuarioDAO() {
-		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia(); 	}
+		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
 
-	@Override
+
 	public void create(Usuario usuario) {
 
-		
-		
 		// servicioPersistencia.addPropiedad(ent,"nombre", usuario.getNombre());
 		LinkedList<Propiedad> propiedades = new LinkedList<Propiedad>();
 		propiedades.add(new Propiedad("nombre", usuario.getNombre()));
@@ -48,13 +45,13 @@ public class AdaptadorUsuarioDAO implements UsuarioDAO {
 	}
 
 	@Override
-	public boolean delete(Usuario usuario) {
+	public boolean deleteUsuario(Usuario usuario) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(usuario.getId());
 		return servicioPersistencia.borrarEntidad(entidad);
 	}
 
 	@Override
-	public Usuario get(int id) {
+	public Usuario getUsuario(int id) {
 		Entidad entidad = servicioPersistencia.recuperarEntidad(id);
 		
 		String nombre = servicioPersistencia.recuperarPropiedadEntidad(entidad, "nombre");
@@ -69,12 +66,12 @@ public class AdaptadorUsuarioDAO implements UsuarioDAO {
 	}
 
 	@Override
-	public List<Usuario> getUsuarios() { //No es necesario devolver LinkedList, con List basta, porque la implementación es indiferente
+	public List<Usuario> getAllUsuarios() { //No es necesario devolver LinkedList, con List basta, porque la implementación es indiferente
 		LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
 		ArrayList<Entidad> entidades = servicioPersistencia.recuperarEntidades("Usuario");
 		
 		for(Entidad ent : entidades) {
-			usuarios.add(get(ent.getId()));
+			usuarios.add(getUsuario(ent.getId()));
 		}
 		
 		return usuarios;

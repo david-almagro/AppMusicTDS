@@ -6,6 +6,7 @@ public class Cancion {
 	private String estilo;
 	private String rutaFichero;
 	private int numReproducciones;
+	private int id; 
 	
 	public Cancion(String nombre, String interprete, String estilo, String rutafichero) {
 		this.nombre = nombre;
@@ -13,8 +14,7 @@ public class Cancion {
 		this.estilo = estilo;
 		this.rutaFichero = rutafichero;
 		numReproducciones = 0;
-	
-	
+		id = 0;  // se establece al meterlo en el servicio de persistencia;
 	}
 
 	public String getNombre() {
@@ -35,5 +35,13 @@ public class Cancion {
 
 	public int getNumReproducciones() {
 		return numReproducciones;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 }
