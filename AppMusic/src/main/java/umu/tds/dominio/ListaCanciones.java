@@ -8,6 +8,7 @@ public class ListaCanciones {
 	
 	public ListaCanciones(String nombre) {
 		this.nombre = nombre;
+		this.canciones = new LinkedList<Cancion>();
 		//Se le pasa una canción inicial?
 	}
 	

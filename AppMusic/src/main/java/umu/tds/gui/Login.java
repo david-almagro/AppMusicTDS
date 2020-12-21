@@ -47,6 +47,10 @@ public class Login {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					//Borrar después, temporal para no tener que registrar cada vez
+					Controlador.getControlador().registrar("a", "a",
+							"a@gmail.com", "Juan", "Perico", "a");
+					
 					Login window = new Login();
 					window.frame.setVisible(true);
 				} catch (Exception e) {

@@ -121,7 +121,7 @@ public class Controlador {
 
 	public void reproducirCancion(Usuario usuario, Cancion cancion) { //placeholder que solo guarda en recientes
 		// TODO: esta línea da null pointer exception
-		//usuario.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
+		usuario.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
 		
 		URL uri = null;
 		try {
