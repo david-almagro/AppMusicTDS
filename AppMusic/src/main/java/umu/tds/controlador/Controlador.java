@@ -21,7 +21,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import umu.tds.dao.AdaptadorCancionDAO;
 import umu.tds.dao.AdaptadorUsuarioDAO;
+import umu.tds.dao.DAOException;
 import umu.tds.dao.FactoriaDAO;
+import umu.tds.dao.IAdaptadorUsuarioDAO;
 import umu.tds.dominio.Cancion;
 import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
@@ -36,19 +38,24 @@ public class Controlador {
 	
 	//private JFrame frmReproductorDeCanciones;
 	//private JTextField textURL;
-	private FactoriaDAO factoriaDao;
+	private FactoriaDAO factoriaDAO;
 
 	private MediaPlayer mediaPlayer;
 	private String tempPath = "temp";
 
 	
 	private Controlador() {
-
+//necesitamos tener el factoria para registrar y eso
+		try {
+			factoriaDAO = FactoriaDAO.getInstancia();
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//No me acuerdo de donde me he sacado esta función
 	private void inicializarAdaptadores() {
-		//AdaptadorUsuarioDAO adaptadorUsuario = new AdaptadorUsuarioDAO();
+		AdaptadorUsuarioDAO adaptadorUsuario = new AdaptadorUsuarioDAO();
 		AdaptadorCancionDAO adaptadorCancion = new AdaptadorCancionDAO();
 	}
 
@@ -93,6 +100,8 @@ public class Controlador {
 		{
 			Usuario usuario = new Usuario(user, password, email, nombre, apellidos, fechaNac);
 			CatalogoUsuarios.getUnicaInstancia().newUsuario(usuario);
+			IAdaptadorUsuarioDAO udao = factoriaDAO.getUsuarioDAO();
+			udao.createUsuario(usuario);
 			return true;
 		}
 		else return false;

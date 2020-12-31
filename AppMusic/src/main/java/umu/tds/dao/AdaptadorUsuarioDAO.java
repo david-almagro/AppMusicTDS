@@ -13,7 +13,8 @@ import tds.driver.ServicioPersistencia;
 
 //Adaptador de la nterfaz de UsuarioDAO basada en el esquema de "TDS-Guia-Desarrollo-CasoPractico-Presentacion.pdf" de la página 34
 
-public abstract class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
+//quizás abstracta
+public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 
 	private ServicioPersistencia servicioPersistencia;
 	
@@ -22,27 +23,10 @@ public abstract class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	}
 
 
-	public void create(Usuario usuario) {
+	//public void create(Usuario usuario) {
 
-		// servicioPersistencia.addPropiedad(ent,"nombre", usuario.getNombre());
-		LinkedList<Propiedad> propiedades = new LinkedList<Propiedad>();
-		propiedades.add(new Propiedad("nombre", usuario.getNombre()));
-		propiedades.add(new Propiedad("apellidos", usuario.getApellidos()));
-		propiedades.add(new Propiedad("email", usuario.getEmail()));
-		propiedades.add(new Propiedad("user", usuario.getUser()));
-		propiedades.add(new Propiedad("password", usuario.getPassword()));
-		propiedades.add(new Propiedad("fechaNacimiento", usuario.getFechaNac()));
 		
-		//FALTAN PARÁMETROS
-		
-		Entidad entidad = new Entidad();
-		entidad.setNombre("Usuario");
-		entidad.setPropiedades(propiedades);
-		
-		entidad = servicioPersistencia.registrarEntidad(entidad);
-		usuario.setId(entidad.getId());
-		
-	}
+	//}
 
 	@Override
 	public boolean deleteUsuario(Usuario usuario) {
@@ -67,14 +51,47 @@ public abstract class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 
 	@Override
 	public List<Usuario> getAllUsuarios() { //No es necesario devolver LinkedList, con List basta, porque la implementación es indiferente
+		boolean existe = false;
+		
 		LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
-		ArrayList<Entidad> entidades = servicioPersistencia.recuperarEntidades("Usuario");
+		ArrayList<Entidad> entidades = null;
+		try {
+			entidades = servicioPersistencia.recuperarEntidades("Usuario");
+		} catch (NullPointerException e) {
+			existe = true;
+		}
+		
+		// ?? if(existe || entidades==null) return usuarios;
 		
 		for(Entidad ent : entidades) {
 			usuarios.add(getUsuario(ent.getId()));
 		}
 		
 		return usuarios;
+	}
+
+
+	@Override
+	public void createUsuario(Usuario usuario) {
+
+		// servicioPersistencia.addPropiedad(ent,"nombre", usuario.getNombre());
+		LinkedList<Propiedad> propiedades = new LinkedList<Propiedad>();
+		propiedades.add(new Propiedad("nombre", usuario.getNombre()));
+		propiedades.add(new Propiedad("apellidos", usuario.getApellidos()));
+		propiedades.add(new Propiedad("email", usuario.getEmail()));
+		propiedades.add(new Propiedad("user", usuario.getUser()));
+		propiedades.add(new Propiedad("password", usuario.getPassword()));
+		propiedades.add(new Propiedad("fechaNacimiento", usuario.getFechaNac()));
+		
+		//FALTAN PARÁMETROS
+		
+		Entidad entidad = new Entidad();
+		entidad.setNombre("Usuario");
+		entidad.setPropiedades(propiedades);
+		
+		entidad = servicioPersistencia.registrarEntidad(entidad);
+		usuario.setId(entidad.getId());
+		
 	}
 
 }
