@@ -12,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 
 import umu.tds.controlador.Controlador;
-import umu.tds.dominio.Cancion;
 
 //import umu.tds.controlador.Controlador;
 
@@ -25,7 +24,6 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.LinkedList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
@@ -37,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JToolBar;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ListSelectionModel;
 
 
 public class Principal {
@@ -47,7 +44,6 @@ public class Principal {
 	private JFrame frame;
 	private JTextField txtTitulo;
 	private JTextField txtInterprete;
-	private JTable tablaCanciones;
 	private JTextField textField;
 	private JTextField textInterpreteNuevaLista;
 	private JTextField textTituloNuevaLista;
@@ -148,7 +144,7 @@ public class Principal {
     	panel_Explorar.add(panel_Explorar_centro);
     	GridBagLayout gbl_panel_Explorar_centro = new GridBagLayout();
     	gbl_panel_Explorar_centro.columnWidths = new int[]{24, 117, 114, 123, 0, 0};
-    	gbl_panel_Explorar_centro.rowHeights = new int[]{19, 0, 0, 0, 0};
+    	gbl_panel_Explorar_centro.rowHeights = new int[]{34, 0, 224, 0, 0};
     	gbl_panel_Explorar_centro.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
     	gbl_panel_Explorar_centro.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
     	panel_Explorar_centro.setLayout(gbl_panel_Explorar_centro);
@@ -156,6 +152,7 @@ public class Principal {
     	txtTitulo = new JTextField();
     	txtTitulo.setText("Título");
     	GridBagConstraints gbc_txtTitulo = new GridBagConstraints();
+    	gbc_txtTitulo.anchor = GridBagConstraints.NORTH;
     	gbc_txtTitulo.insets = new Insets(0, 0, 5, 5);
     	gbc_txtTitulo.fill = GridBagConstraints.HORIZONTAL;
     	gbc_txtTitulo.gridx = 1;
@@ -166,6 +163,7 @@ public class Principal {
     	txtInterprete = new JTextField();
     	txtInterprete.setText("Intérprete");
     	GridBagConstraints gbc_txtInterprete = new GridBagConstraints();
+    	gbc_txtInterprete.anchor = GridBagConstraints.NORTH;
     	gbc_txtInterprete.insets = new Insets(0, 0, 5, 5);
     	gbc_txtInterprete.fill = GridBagConstraints.HORIZONTAL;
     	gbc_txtInterprete.gridx = 2;
@@ -174,14 +172,18 @@ public class Principal {
     	txtInterprete.setColumns(10);
     	
     	
-    	JComboBox comboBox = new JComboBox();
-    	comboBox.setModel(new DefaultComboBoxModel(new String[] {"Jazz", "Pop", "Electronica", "Punk"}));
-    	GridBagConstraints gbc_comboBox = new GridBagConstraints();
-    	gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-    	gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-    	gbc_comboBox.gridx = 3;
-    	gbc_comboBox.gridy = 0;
-    	panel_Explorar_centro.add(comboBox, gbc_comboBox);
+    	JComboBox<String> comboBox_TipoCanciones = new JComboBox<String>();
+    	for(String tipoCancion : controlador.getTiposCanciones()) {
+    		comboBox_TipoCanciones.addItem(tipoCancion);
+    	}
+    	
+    	GridBagConstraints gbc_comboBox_TipoCanciones = new GridBagConstraints();
+    	gbc_comboBox_TipoCanciones.anchor = GridBagConstraints.NORTH;
+    	gbc_comboBox_TipoCanciones.insets = new Insets(0, 0, 5, 5);
+    	gbc_comboBox_TipoCanciones.fill = GridBagConstraints.HORIZONTAL;
+    	gbc_comboBox_TipoCanciones.gridx = 3;
+    	gbc_comboBox_TipoCanciones.gridy = 0;
+    	panel_Explorar_centro.add(comboBox_TipoCanciones, gbc_comboBox_TipoCanciones);
     	JButton btnBuscar = new JButton("Buscar");
   
     	GridBagConstraints gbc_btnBuscar = new GridBagConstraints();
@@ -199,139 +201,27 @@ public class Principal {
     	gbc_btnCancelar.gridy = 1;
     	panel_Explorar_centro.add(btnCancelar, gbc_btnCancelar);
     	
-    	JPanel Music_Player = new JPanel();
-    	GridBagConstraints gbc_Music_Player = new GridBagConstraints();
-    	gbc_Music_Player.gridwidth = 3;
-    	gbc_Music_Player.insets = new Insets(0, 0, 5, 5);
-    	gbc_Music_Player.fill = GridBagConstraints.BOTH;
-    	gbc_Music_Player.gridx = 1;
-    	gbc_Music_Player.gridy = 2;
-    	panel_Explorar_centro.add(Music_Player, gbc_Music_Player);
-    	GridBagLayout gbl_Music_Player = new GridBagLayout();
-    	gbl_Music_Player.columnWidths = new int[]{0, 0, 0, 0};
-    	gbl_Music_Player.rowHeights = new int[]{0, 0, 0, 0};
-    	gbl_Music_Player.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
-    	gbl_Music_Player.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-    	Music_Player.setLayout(gbl_Music_Player);
-    	Music_Player.setVisible(false);
+    	MusicPlayer musicPlayer_Explorar = new MusicPlayer();
+    	musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); //TODO: tratar las listas de canciones bien, no así 
     	
+    	GridBagConstraints gbc_musicPlayer_Explorar = new GridBagConstraints();
+    	gbc_musicPlayer_Explorar.gridwidth = 3;
+    	gbc_musicPlayer_Explorar.insets = new Insets(0, 0, 5, 5);
+    	gbc_musicPlayer_Explorar.fill = GridBagConstraints.BOTH;
+    	gbc_musicPlayer_Explorar.gridx = 1;
+    	gbc_musicPlayer_Explorar.gridy = 2;
+    	panel_Explorar_centro.add(musicPlayer_Explorar, gbc_musicPlayer_Explorar);
+    	
+    	//TODO: boton buscar
       	btnBuscar.addActionListener(new ActionListener() {     										
-    		public void actionPerformed(ActionEvent e) {											//TODO: Probablemente reordenar todo
-    	    	Music_Player.setVisible(true);
-    	    	//TODO: Lógica del boton Buscar
+    		public void actionPerformed(ActionEvent e) {
+    			//Estilo musical
+    			//comboBox_TipoCanciones.getSelectedItem();
+    			
+    			
     		}
     	});
     	
-    	
-    	JScrollPane scrollPane = new JScrollPane();
-    	GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-    	gbc_scrollPane.gridwidth = 3;
-    	gbc_scrollPane.gridheight = 2;
-    	gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
-    	gbc_scrollPane.fill = GridBagConstraints.BOTH;
-    	gbc_scrollPane.gridx = 0;
-    	gbc_scrollPane.gridy = 0;
-    	Music_Player.add(scrollPane, gbc_scrollPane);
-    	
-    	//####################################
-    	// 		todo esto no va aquí pero mola ir viendo la tabla con algo en vez de vacía
-    	//####################################
-    	//	TODO: Cambiar la tabla para que contenga una columna oculta con el id de la canción
-    	//	para así luego pedir el id a la tabla y pedir su reproducción al controlador.
-    	// 	Mejor que pedirle una canción por el título.
-    	//  https://stackoverflow.com/questions/25975459/how-to-hide-the-jtable-column-data
-
-    	LinkedList<Cancion> c = new LinkedList<Cancion>();
-    	try {
-			c = (LinkedList<Cancion>) controlador.inicializarCancionesLocales();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    	
-    	tablaCanciones = new JTable();
-    	tablaCanciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    	tablaCanciones.setModel(new DefaultTableModel(
-    		new String[] {
-    			"Título", "Intérprete"
-    		}, 0
-    	));
-    	
-    	//Añadir filas por canción
-    	DefaultTableModel modeloTablaCanciones = (DefaultTableModel) tablaCanciones.getModel();
-    	for(Cancion s : c) {
-    		modeloTablaCanciones.addRow(new Object[] {s.getNombre(), s.getInterprete()});
-    	}
-    	
-    	//####################################
-    	// 		mover todo esto
-    	//####################################
-    			
-    	scrollPane.setViewportView(tablaCanciones);
-    	
-    	//Botón retroceder
-    	JButton btnBack = new JButton();
-    	GridBagConstraints gbc_btnBack = new GridBagConstraints();
-    	gbc_btnBack.fill = GridBagConstraints.HORIZONTAL;
-    	gbc_btnBack.insets = new Insets(0, 0, 0, 5);
-    	gbc_btnBack.gridx = 0;
-    	gbc_btnBack.gridy = 2;
-    	Music_Player.add(btnBack, gbc_btnBack);
-    	btnBack.setIcon(new ImageIcon("resources/iconos/Anterior.png"));
-    	
-    	//Botón Reproducir / Parar
-    	JButton btnPlay = new JButton();
-    	GridBagConstraints gbc_btnPlay = new GridBagConstraints();
-    	gbc_btnPlay.fill = GridBagConstraints.HORIZONTAL;
-    	gbc_btnPlay.insets = new Insets(0, 0, 0, 5);
-    	gbc_btnPlay.gridx = 1;
-    	gbc_btnPlay.gridy = 2;
-    	Music_Player.add(btnPlay, gbc_btnPlay);
-    	ImageIcon playIcon = new ImageIcon("resources/iconos/Play.png");
-    	ImageIcon stopIcon = new ImageIcon("resources/iconos/Stop.png");
-    	btnPlay.setIcon(playIcon);
-
-    	//On Click
-    	btnPlay.addMouseListener(new MouseAdapter() {
-			boolean isPlaying = false;
-    		@Override
-			public void mouseClicked(MouseEvent e) {					
-
-    			if(isPlaying) {
-					isPlaying = false;
-					btnPlay.setIcon(playIcon);
-					controlador.pararCancion();
-				}
-				else {
-					isPlaying = true;
-					btnPlay.setIcon(stopIcon);
-					int selectedRow = tablaCanciones.getSelectedRow();
-					System.out.println("Cancion seleccionada : " + modeloTablaCanciones.getValueAt(selectedRow, 0));  //TODO: quitar el sysout (?)
-
-					//TODO: en un futuro se pedirá "reproducción por id" al controlador
-					// La idea es tener los id escondidos dentro de la tabla.
-					// estas siguientes lineas están mal pero representan funcionalidad por ahora.
-					Cancion playedSong;
-					try {
-						playedSong = controlador.inicializarCancionesLocales().get(selectedRow);
-					} catch (IOException e1) {
-						playedSong = null;
-						e1.printStackTrace();
-					} 
-					controlador.reproducirCancion(controlador.getUser(), playedSong);
-
-				}
-			}
-		});
-    	
-    	// Botón Siguiente
-    	JButton btnForward = new JButton();
-    	GridBagConstraints gbc_btnForward = new GridBagConstraints();
-    	gbc_btnForward.fill = GridBagConstraints.HORIZONTAL;
-    	gbc_btnForward.gridx = 2;
-    	gbc_btnForward.gridy = 2;
-    	Music_Player.add(btnForward, gbc_btnForward);
-    	btnForward.setIcon(new ImageIcon("resources/iconos/Siguiente.png"));
         panel_Explorar.setOpaque(true);
         
         JPanel panel_NuevaLista = new JPanel();
@@ -417,30 +307,8 @@ public class Principal {
         gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
         gbc_scrollPane_1.gridx = 1;
         gbc_scrollPane_1.gridy = 2;
-        panel_CreacionLista.add(scrollPane_1, gbc_scrollPane_1);
+        panel_CreacionLista.add(scrollPane_1, gbc_scrollPane_1); 
         
-        table = new JTable();
-        table.setModel(new DefaultTableModel(
-        	new Object[][] {
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        	},
-        	new String[] {
-        		"New column", "New column"
-        	}
-        ));
         scrollPane_1.setViewportView(table);
         
         JScrollPane scrollPane_2 = new JScrollPane();
@@ -453,34 +321,6 @@ public class Principal {
         gbc_scrollPane_2.gridy = 2;
         panel_CreacionLista.add(scrollPane_2, gbc_scrollPane_2);
         
-        table_2 = new JTable();
-        table_2.setModel(new DefaultTableModel(
-        	new Object[][] {
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        		{null, null},
-        	},
-        	new String[] {
-        		"New column", "New column"
-        	}
-        ));
         scrollPane_2.setViewportView(table_2);
         
         JButton btnleftleft = new JButton("<<");
@@ -510,6 +350,15 @@ public class Principal {
         gbc_btnCancelarNuevaLista.gridx = 4;
         gbc_btnCancelarNuevaLista.gridy = 7;
         panel_CreacionLista.add(btnCancelarNuevaLista, gbc_btnCancelarNuevaLista);
+        
+        JPanel panel_Reciente = new JPanel();
+        panelCentral.add(panel_Reciente, "panel_Reciente");
+        panel_Reciente.setLayout(new BorderLayout(0, 0));
+        
+        MusicPlayer musicPlayer_Recientes = new MusicPlayer();
+        musicPlayer_Recientes.setListaTitulo("Canciones Recientes");
+        
+        panel_Reciente.add(musicPlayer_Recientes);
     	panel_NuevaLista.setVisible(false);
 		
     	
@@ -525,21 +374,22 @@ public class Principal {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				cardLayout.show(panelCentral, "card_Explorar");
-    	    	Music_Player.setVisible(false);
-
+				//TODO: Botón explorar
 			}
 		});
 		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Explorar.png"));
 		toolBar.add(btnExplorar);
 		
 		JButton btnNuevaLista = new JButton("Nueva lista");
+		btnNuevaLista.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnNuevaLista.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				cardLayout.show(panelCentral, "card_NuevaLista");
 				panel_CreacionLista.setVisible(false);
-
-
 			}
 		});
 		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Nueva_Lista.png"));
@@ -549,8 +399,12 @@ public class Principal {
 		btnReciente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				cardLayout.show(panelCentral, "panel_Reciente");
+		        musicPlayer_Recientes.setCanciones(controlador.getReciente().getCanciones()); //TODO: tratar bien las listas de canciones
+				panel_CreacionLista.setVisible(false);
 			}
 		});
+
 		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Reciente.png"));
 		toolBar.add(btnReciente);
 		

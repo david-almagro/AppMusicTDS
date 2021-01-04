@@ -5,17 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -36,10 +32,13 @@ public class Controlador {
 	private static Controlador controlador;
 	private Usuario user;
 	
+	//Igual esto no va aquí
+	private LinkedList<Cancion> cancionesLocales;
+	private LinkedList<String> tiposCancion;
 	//private JFrame frmReproductorDeCanciones;
 	//private JTextField textURL;
 	private FactoriaDAO factoriaDAO;
-
+	
 	private MediaPlayer mediaPlayer;
 	private String tempPath = "temp";
 
@@ -128,9 +127,9 @@ public class Controlador {
 	}
 	
 
-	public void reproducirCancion(Usuario usuario, Cancion cancion) { //placeholder que solo guarda en recientes
+	public void reproducirCancion(Cancion cancion) { //placeholder que solo guarda en recientes
 		// TODO: esta línea da null pointer exception
-		usuario.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
+		user.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
 		
 		URL uri = null;
 		try {
@@ -160,6 +159,29 @@ public class Controlador {
 			e1.printStackTrace();
 		}
 	}
+	
+	
+	
+	public void reproducirCancionPorId(int cancionId) { 
+		//Esto esta mal si o también
+		for(Cancion s : cancionesLocales) {
+			if (s.getId().equals(cancionId))
+				reproducirCancion(s);
+		}
+		
+	}
+	
+	
+	public void reproducirCancionPorNombre(String tituloCancion) { 
+		//Esto esta mal si o también
+		System.out.println("SysoutControlador.java -> intentando reproducir canción: " + tituloCancion);
+		for(Cancion s : cancionesLocales) {
+			if (s.getNombre().equals(tituloCancion))
+				reproducirCancion(s);
+		}
+		
+	}
+	
 
 	public void pararCancion() {
 		if (mediaPlayer != null) mediaPlayer.stop();
@@ -171,23 +193,31 @@ public class Controlador {
 		}
 	}
 	
-	public LinkedList<Cancion> inicializarCancionesLocales() throws IOException {
-		//Esto no va aquí pero se usa esta funcion temporalmente para comprobar el funcionamiento del código.
-		//TODO: Cambiar esto.
+	public void inicializarCancionesLocales() throws IOException {
+		//TODO: Esto va aquí?
+		tiposCancion = new LinkedList<String>();
+
 		File srcCanciones = new File("resources/canciones");
 		File[] carpetasCanciones = srcCanciones.listFiles();
-		LinkedList<Cancion> canciones = new LinkedList<Cancion>();
+		cancionesLocales = new LinkedList<Cancion>();
 		
 		for (File f : carpetasCanciones) {
 			File[] cancionesPorEstilo = f.listFiles();
-		
+			tiposCancion.add(f.getName());
 			for (File s : cancionesPorEstilo) {
 				String[] autorTitulo = s.getName().split("-");
 				Cancion cancion = new Cancion(autorTitulo[1], autorTitulo[0], f.getName().toLowerCase(), s.getPath());
-				canciones.add(cancion);
+				cancionesLocales.add(cancion);
 			}
 		}
-		return canciones;
+	}
+	
+	public LinkedList<Cancion> getCancionesLocales(){
+		return cancionesLocales;
+	}
+	
+	public LinkedList<String> getTiposCanciones(){
+		return tiposCancion;
 	}
 	
 }
