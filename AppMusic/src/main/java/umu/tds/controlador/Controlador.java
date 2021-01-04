@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.scene.media.Media;
@@ -33,7 +34,6 @@ public class Controlador {
 	private Usuario user;
 	
 	//Igual esto no va aquí
-	private LinkedList<Cancion> cancionesLocales;
 	private LinkedList<String> tiposCancion;
 	//private JFrame frmReproductorDeCanciones;
 	//private JTextField textURL;
@@ -119,10 +119,13 @@ public class Controlador {
 
 	//está bien? basado en ejercicio 6 boletin 4
 	public List<Cancion> busqueda(String nombre, String interprete, String estilo){
+		
+		System.out.println("Busqueda || nombre: " + nombre + " || interprete: " + interprete + "  ||  estilo: " + estilo);
 		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
-											.filter(x -> nombre == null || x.getNombre().contentEquals(nombre))
-											.filter(x -> estilo == null || x.getNombre().contentEquals(estilo))
-											.filter(x -> interprete == null || x.getNombre().contentEquals(interprete)).collect(Collectors.toList());
+											.filter(x -> nombre == "" || x.getNombre().toLowerCase().contains(nombre.toLowerCase()))  //Contains para una búsqueda "inteligente"
+											.filter(x -> estilo == "" || x.getEstilo().toLowerCase().contains(estilo.toLowerCase()))  // TolowerCase para buscar sin discriminar mayusculas
+											.filter(x -> interprete == "-" || x.getInterprete().toLowerCase().contains(interprete.toLowerCase())).collect(Collectors.toList());
+		
 		return listaBusqueda;
 	}
 	
@@ -164,7 +167,7 @@ public class Controlador {
 	
 	public void reproducirCancionPorId(int cancionId) { 
 		//Esto esta mal si o también
-		for(Cancion s : cancionesLocales) {
+		for(Cancion s : CatalogoCanciones.getUnicaInstancia().getCanciones()) {
 			if (s.getId().equals(cancionId))
 				reproducirCancion(s);
 		}
@@ -175,7 +178,7 @@ public class Controlador {
 	public void reproducirCancionPorNombre(String tituloCancion) { 
 		//Esto esta mal si o también
 		System.out.println("SysoutControlador.java -> intentando reproducir canción: " + tituloCancion);
-		for(Cancion s : cancionesLocales) {
+		for(Cancion s : CatalogoCanciones.getUnicaInstancia().getCanciones()) {
 			if (s.getNombre().equals(tituloCancion))
 				reproducirCancion(s);
 		}
@@ -194,30 +197,28 @@ public class Controlador {
 	}
 	
 	public void inicializarCancionesLocales() throws IOException {
-		//TODO: Esto va aquí?
 		tiposCancion = new LinkedList<String>();
 
 		File srcCanciones = new File("resources/canciones");
 		File[] carpetasCanciones = srcCanciones.listFiles();
-		cancionesLocales = new LinkedList<Cancion>();
 		
 		for (File f : carpetasCanciones) {
 			File[] cancionesPorEstilo = f.listFiles();
 			tiposCancion.add(f.getName());
 			for (File s : cancionesPorEstilo) {
 				String[] autorTitulo = s.getName().split("-");
-				Cancion cancion = new Cancion(autorTitulo[1], autorTitulo[0], f.getName().toLowerCase(), s.getPath());
-				cancionesLocales.add(cancion);
+				Cancion cancion = new Cancion(autorTitulo[1], autorTitulo[0], f.getName(), s.getPath());
+				CatalogoCanciones.getUnicaInstancia().newCancion(cancion);
 			}
 		}
 	}
 	
-	public LinkedList<Cancion> getCancionesLocales(){
-		return cancionesLocales;
+	public List<Cancion> getCancionesLocales(){
+		return CatalogoCanciones.getUnicaInstancia().getCanciones();
 	}
 	
-	public LinkedList<String> getTiposCanciones(){
-		return tiposCancion;
+	public Set<String> getTiposCanciones(){
+		return CatalogoCanciones.getUnicaInstancia().getEstilos();
 	}
 	
 }

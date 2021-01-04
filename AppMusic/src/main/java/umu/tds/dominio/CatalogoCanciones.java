@@ -2,6 +2,8 @@ package umu.tds.dominio;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CatalogoCanciones {
 	
@@ -32,5 +34,9 @@ public class CatalogoCanciones {
 	// ??? se puede ?    //devolver lista o arraylist?
 	public List<Cancion> getCanciones() {
 		return new ArrayList<Cancion>(canciones); //se devuelve una copia
+	}
+	
+	public Set<String> getEstilos() {
+		return canciones.stream().map(c -> c.getEstilo()).collect(Collectors.toSet());
 	}
 }

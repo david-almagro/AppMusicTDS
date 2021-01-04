@@ -173,9 +173,11 @@ public class Principal {
     	
     	
     	JComboBox<String> comboBox_TipoCanciones = new JComboBox<String>();
+    	comboBox_TipoCanciones.addItem("-");
     	for(String tipoCancion : controlador.getTiposCanciones()) {
     		comboBox_TipoCanciones.addItem(tipoCancion);
     	}
+    	
     	
     	GridBagConstraints gbc_comboBox_TipoCanciones = new GridBagConstraints();
     	gbc_comboBox_TipoCanciones.anchor = GridBagConstraints.NORTH;
@@ -194,14 +196,20 @@ public class Principal {
     	gbc_btnBuscar.gridy = 1;
     	panel_Explorar_centro.add(btnBuscar, gbc_btnBuscar);
     	
+    	MusicPlayer musicPlayer_Explorar = new MusicPlayer();
+
     	JButton btnCancelar = new JButton("Cancelar");
+    	btnCancelar.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    	    	musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); 
+    		}
+    	});
     	GridBagConstraints gbc_btnCancelar = new GridBagConstraints();
     	gbc_btnCancelar.insets = new Insets(0, 0, 5, 5);
     	gbc_btnCancelar.gridx = 3;
     	gbc_btnCancelar.gridy = 1;
     	panel_Explorar_centro.add(btnCancelar, gbc_btnCancelar);
     	
-    	MusicPlayer musicPlayer_Explorar = new MusicPlayer();
     	musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); //TODO: tratar las listas de canciones bien, no así 
     	
     	GridBagConstraints gbc_musicPlayer_Explorar = new GridBagConstraints();
@@ -215,10 +223,11 @@ public class Principal {
     	//TODO: boton buscar
       	btnBuscar.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
-    			//Estilo musical
-    			//comboBox_TipoCanciones.getSelectedItem();
-    			
-    			
+    			//Estilo musical 			
+    			musicPlayer_Explorar.setCanciones(
+    					controlador.busqueda(txtTitulo.getText(),
+											txtInterprete.getText(),
+									    	comboBox_TipoCanciones.getSelectedItem().toString()));
     		}
     	});
     	
