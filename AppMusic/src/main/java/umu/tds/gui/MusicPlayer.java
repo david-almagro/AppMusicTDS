@@ -115,7 +115,7 @@ public class MusicPlayer extends JPanel {
 			},
 			new String[] {
 				"Cancion", "Autor", "Id"
-			}
+			} 
 		));
 		
 		

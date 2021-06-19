@@ -230,7 +230,7 @@ public class Principal {
       	btnBuscar.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
     			//Estilo musical
-    			//comboBox_TipoCanciones.getSelectedItem();
+    			//comboBox_TipoCanciones.getSelectedItem(); 
     			String titulo = txtTitulo.getText();
     			String interprete = txtInterprete.getText();
     			String estilo = comboBox_TipoCanciones.getSelectedItem().toString().toLowerCase();

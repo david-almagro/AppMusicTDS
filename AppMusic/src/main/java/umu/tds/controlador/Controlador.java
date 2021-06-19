@@ -133,7 +133,7 @@ public class Controlador {
 		///.filter(x -> nombre == "" || x.getNombre().contentEquals(nombre))
 		//.filter(x -> estilo == "" || x.getNombre().contentEquals(estilo))
 		//.filter(x -> interprete == "" || x.getNombre().contentEquals(interprete)).collect(Collectors.toList());
-		return listaBusqueda;
+		return listaBusqueda; 
 	}
 	
 
