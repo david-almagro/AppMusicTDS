@@ -119,10 +119,20 @@ public class Controlador {
 
 	//está bien? basado en ejercicio 6 boletin 4
 	public List<Cancion> busqueda(String nombre, String interprete, String estilo){
-		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
-											.filter(x -> nombre == null || x.getNombre().contentEquals(nombre))
-											.filter(x -> estilo == null || x.getNombre().contentEquals(estilo))
-											.filter(x -> interprete == null || x.getNombre().contentEquals(interprete)).collect(Collectors.toList());
+		List<Cancion> l = controlador.getCancionesLocales();
+		//for(Cancion c:l)System.out.println(c.getNombre());
+		List<Cancion> listaBusqueda = controlador.getCancionesLocales().stream() //getCancionesLocales o getCanciones a CatalogoCanciones?
+											.filter(x -> nombre == "" || x.getNombre().contains(nombre))
+											.filter(x -> estilo == "" || x.getEstilo().contentEquals(estilo))
+											.filter(x -> interprete == "" || x.getInterprete().contains(interprete)).collect(Collectors.toList());
+		//controlador.getCancionesLocales().stream()
+		//		.filter(x -> nombre == "" || x.getNombre().contains(nombre))
+		//		.filter(x -> estilo == "" || x.getEstilo().contains(estilo))
+		//		.filter(x -> interprete == "" || x.getInterprete().contains(interprete)).forEach(e -> System.out.println(e.getNombre()));
+		//		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
+		///.filter(x -> nombre == "" || x.getNombre().contentEquals(nombre))
+		//.filter(x -> estilo == "" || x.getNombre().contentEquals(estilo))
+		//.filter(x -> interprete == "" || x.getNombre().contentEquals(interprete)).collect(Collectors.toList());
 		return listaBusqueda;
 	}
 	

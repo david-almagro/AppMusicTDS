@@ -17,6 +17,8 @@ import umu.tds.dominio.Cancion;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.util.LinkedList;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -134,7 +136,8 @@ public class MusicPlayer extends JPanel {
 	    return new Dimension(500, 500);
 	}
 	
-	public void setCanciones(LinkedList<Cancion> canciones) {
+	//Cambiado a List para poder usar Arraylist de la busqueda
+	public void setCanciones(List<Cancion> canciones) {
 		DefaultTableModel modeloTablaCanciones = (DefaultTableModel) table.getModel();
 		modeloTablaCanciones.setRowCount(0);
 		for(Cancion s : canciones) {

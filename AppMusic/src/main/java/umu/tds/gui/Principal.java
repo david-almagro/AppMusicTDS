@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.dominio.Cancion;
 
 //import umu.tds.controlador.Controlador;
 
@@ -24,6 +25,8 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
@@ -113,8 +116,19 @@ public class Principal {
 		panel_top.add(btnHaztePremium);
 		btnHaztePremium.setAlignmentX(1.0f);
 		
+		
+		//Añadida funcionalidad logout
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.setAlignmentX(1.0f);
+		btnLogout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Controlador.getControlador().pararCancion();
+				frame.dispose();
+				Login l = new Login();
+				l.hacerVisible();
+			}
+		});
 		panel_top.add(btnLogout);
 		
 		//Si el usuario es premium, desactivar botón de hacerse premium
@@ -217,8 +231,21 @@ public class Principal {
     		public void actionPerformed(ActionEvent e) {
     			//Estilo musical
     			//comboBox_TipoCanciones.getSelectedItem();
-    			
-    			
+    			String titulo = txtTitulo.getText();
+    			String interprete = txtInterprete.getText();
+    			String estilo = comboBox_TipoCanciones.getSelectedItem().toString().toLowerCase();
+    			List<Cancion> listaBusqueda = controlador.busqueda(titulo, interprete, estilo);
+		        musicPlayer_Explorar.setCanciones(listaBusqueda); //TODO: tratar bien las listas de canciones
+
+    		}
+    	});
+      	
+      	btnCancelar.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			//Estilo musical
+    			//comboBox_TipoCanciones.getSelectedItem();
+		        musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); //TODO: tratar bien las listas de canciones
+
     		}
     	});
     	
