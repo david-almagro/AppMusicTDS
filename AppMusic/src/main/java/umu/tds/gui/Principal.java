@@ -25,8 +25,10 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
@@ -52,6 +54,10 @@ public class Principal {
 	private JTextField textTituloNuevaLista;
 	private JTable table;
 	private JTable table_2;
+	
+    private ArrayList<Cancion> listaSeleccion;
+    private ArrayList<Cancion> listaSeleccion2;
+    
 
 	/**
 	 * Launch the application.
@@ -151,6 +157,9 @@ public class Principal {
     	String[] columns = {"título", "intérprete"};
     	DefaultTableModel modelo = new DefaultTableModel();
     	for (String s : columns) {modelo.addColumn(s);}
+    	
+    	DefaultTableModel modelo2 = new DefaultTableModel();
+    	for (String s : columns) {modelo2.addColumn(s);}
     	
     	JPanel panel_Explorar_centro = new JPanel();
     	panel_Explorar_centro.setAlignmentX(0.0f);
@@ -278,6 +287,21 @@ public class Principal {
 
         CrearLista.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		
+        		//Creamos las listas 
+        		listaSeleccion = new ArrayList<Cancion>();
+        		listaSeleccion2 = new ArrayList<Cancion>();
+
+        		
+        		
+    			//Vaciamos ambos modelos
+    			while (modelo.getRowCount() > 0) {
+    				modelo.removeRow(0);
+    			}
+    			while (modelo2.getRowCount() > 0) {
+    				modelo2.removeRow(0);
+    			}
+        		
         		String nuevalistaNombre = textField.getText();
         		if (controlador.existeLista(textField.getText())) {
         			JOptionPane.showMessageDialog(frame, "Ya existe una lista con ese nombre", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
@@ -291,24 +315,26 @@ public class Principal {
         	}
         });
         
-        textInterpreteNuevaLista = new JTextField();
-        GridBagConstraints gbc_textInterpreteNuevaLista = new GridBagConstraints();
-        gbc_textInterpreteNuevaLista.insets = new Insets(0, 0, 5, 5);
-        gbc_textInterpreteNuevaLista.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textInterpreteNuevaLista.gridx = 1;
-        gbc_textInterpreteNuevaLista.gridy = 1;
-        panel_CreacionLista.add(textInterpreteNuevaLista, gbc_textInterpreteNuevaLista);
-        textInterpreteNuevaLista.setColumns(10);
-        
         textTituloNuevaLista = new JTextField();
         GridBagConstraints gbc_textTituloNuevaLista = new GridBagConstraints();
         gbc_textTituloNuevaLista.insets = new Insets(0, 0, 5, 5);
         gbc_textTituloNuevaLista.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textTituloNuevaLista.gridx = 2;
+        gbc_textTituloNuevaLista.gridx = 1;
         gbc_textTituloNuevaLista.gridy = 1;
         panel_CreacionLista.add(textTituloNuevaLista, gbc_textTituloNuevaLista);
         textTituloNuevaLista.setColumns(10);
+         
+        //Título e intérprete estaban al revés
+        textInterpreteNuevaLista = new JTextField();
+        GridBagConstraints gbc_textInterpreteNuevaLista = new GridBagConstraints();
+        gbc_textInterpreteNuevaLista.insets = new Insets(0, 0, 5, 5);
+        gbc_textInterpreteNuevaLista.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textInterpreteNuevaLista.gridx = 2;
+        gbc_textInterpreteNuevaLista.gridy = 1;
+        panel_CreacionLista.add(textInterpreteNuevaLista, gbc_textInterpreteNuevaLista);
+        textInterpreteNuevaLista.setColumns(10);
         
+       
         JComboBox comboBox_1 = new JComboBox();
         comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Jazz", "Pop", "Rock", "Punk", "Electronica"}));
         GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
@@ -325,6 +351,7 @@ public class Principal {
         gbc_BuscarNuevaLista.gridx = 4;
         gbc_BuscarNuevaLista.gridy = 1;
         panel_CreacionLista.add(BuscarNuevaLista, gbc_BuscarNuevaLista);
+
         
         JScrollPane scrollPane_1 = new JScrollPane();
         GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
@@ -335,6 +362,39 @@ public class Principal {
         gbc_scrollPane_1.gridx = 1;
         gbc_scrollPane_1.gridy = 2;
         panel_CreacionLista.add(scrollPane_1, gbc_scrollPane_1); 
+
+
+        table = new JTable(modelo);
+        scrollPane_1.setViewportView(table);
+
+        
+        //TODO: Falta que se vacíen al cancelar o crear nueva lista
+
+        BuscarNuevaLista.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			
+    	        //ArrayList<Cancion> listaSeleccion = new ArrayList();
+    	        listaSeleccion2 = new ArrayList<Cancion>(); 
+    			//comboBox_TipoCanciones.getSelectedItem(); 
+    			String titulo = textTituloNuevaLista.getText();
+    			String interprete = textInterpreteNuevaLista.getText();
+    			String estilo = comboBox_1.getSelectedItem().toString().toLowerCase();
+    			List<Cancion> listaBusqueda = controlador.busqueda(titulo, interprete, estilo);
+    	        for(Cancion c : listaBusqueda) {
+    	        	Vector<String> v = new Vector<String>();
+    	        	v.add(c.getNombre());
+    	        	v.add(c.getInterprete());
+    	            modelo.addRow(v);
+    	            listaSeleccion.add(c);
+    	            //de esta forma tendrán el mismo orden y con el mismo índice
+
+    	        }
+    	        table = new JTable(modelo);
+    	        
+    	        scrollPane_1.setViewportView(table);
+
+    		}
+    	});
         
         scrollPane_1.setViewportView(table);
         
@@ -348,6 +408,12 @@ public class Principal {
         gbc_scrollPane_2.gridy = 2;
         panel_CreacionLista.add(scrollPane_2, gbc_scrollPane_2);
         
+        //Creamos el model con las columnas y lo metemos en la tabla, posteriormente se añadirán con los >> y <<
+       // DefaultTableModel model2 = new DefaultTableModel();
+        //model2.addColumn("Título");
+        //model2.addColumn("Intérprete");
+        table_2 = new JTable(modelo2);
+
         scrollPane_2.setViewportView(table_2);
         
         JButton btnleftleft = new JButton("<<");
@@ -356,6 +422,26 @@ public class Principal {
         gbc_btnleftleft.gridx = 3;
         gbc_btnleftleft.gridy = 3;
         panel_CreacionLista.add(btnleftleft, gbc_btnleftleft);
+        btnleftleft.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			
+    			int row = table_2.getSelectedRow();
+    			String title = (String) table_2.getValueAt(row,0);
+    			String interp = (String) table_2.getValueAt(row,1);
+	        	Vector<String> v = new Vector<String>();
+	        	v.add(title);
+	        	v.add(interp);
+	            modelo.addRow(v);
+	            modelo2.removeRow(row);
+
+
+	            //se saca de la misma posición de la lista
+	            listaSeleccion.add(listaSeleccion2.get(row)); //addLast el que cogemos de la posición "row"
+	            listaSeleccion2.remove(row);
+
+    		}
+    	});
+        
         
         JButton btnRightRight = new JButton(">>");
         GridBagConstraints gbc_btnRightRight = new GridBagConstraints();
@@ -363,6 +449,24 @@ public class Principal {
         gbc_btnRightRight.gridx = 3;
         gbc_btnRightRight.gridy = 4;
         panel_CreacionLista.add(btnRightRight, gbc_btnRightRight);
+        btnRightRight.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			
+    			int row = table.getSelectedRow();
+    			String title = (String) table.getValueAt(row,0);
+    			String interp = (String) table.getValueAt(row,1);
+	        	Vector<String> v = new Vector<String>();
+	        	v.add(title);
+	        	v.add(interp);
+	            modelo2.addRow(v);
+	            modelo.removeRow(row);
+
+	            //se saca de la misma posición de la lista
+	            listaSeleccion2.add(listaSeleccion.get(row)); //addLast el que cogemos de la posición "row"
+	            listaSeleccion.remove(row);
+
+    		}
+    	});
         
         JButton btnAceptarNuevaLista = new JButton("Aceptar");
         GridBagConstraints gbc_btnAceptarNuevaLista = new GridBagConstraints();
@@ -370,6 +474,21 @@ public class Principal {
         gbc_btnAceptarNuevaLista.gridx = 2;
         gbc_btnAceptarNuevaLista.gridy = 7;
         panel_CreacionLista.add(btnAceptarNuevaLista, gbc_btnAceptarNuevaLista);
+        btnAceptarNuevaLista.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			
+    			//PRUEBA; se printea la playlist cread
+    			for(Cancion c:listaSeleccion2) {
+    			System.out.printf(c.getNombre());
+    			System.out.printf(" - ");
+    			System.out.printf(c.getInterprete());
+    			System.out.printf("\n");
+    			}
+    			JOptionPane.showMessageDialog(frame, "Lista creada", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
+
+
+    		}
+    	});
         
         JButton btnCancelarNuevaLista = new JButton("Cancelar");
         GridBagConstraints gbc_btnCancelarNuevaLista = new GridBagConstraints();
