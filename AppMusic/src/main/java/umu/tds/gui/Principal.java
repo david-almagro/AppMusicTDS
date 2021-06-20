@@ -238,23 +238,11 @@ public class Principal {
     	//TODO: boton buscar
       	btnBuscar.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
-    			//Estilo musical
-    			//comboBox_TipoCanciones.getSelectedItem(); 
-    			String titulo = txtTitulo.getText();
-    			String interprete = txtInterprete.getText();
-    			String estilo = comboBox_TipoCanciones.getSelectedItem().toString().toLowerCase();
-    			List<Cancion> listaBusqueda = controlador.busqueda(titulo, interprete, estilo);
-		        musicPlayer_Explorar.setCanciones(listaBusqueda); //TODO: tratar bien las listas de canciones
-
-    		}
-    	});
-      	
-      	btnCancelar.addActionListener(new ActionListener() {     										
-    		public void actionPerformed(ActionEvent e) {
-    			//Estilo musical
-    			//comboBox_TipoCanciones.getSelectedItem();
-		        musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); //TODO: tratar bien las listas de canciones
-
+    			//Estilo musical 			
+    			musicPlayer_Explorar.setCanciones(
+    					controlador.busqueda(txtTitulo.getText(),
+											txtInterprete.getText(),
+									    	comboBox_TipoCanciones.getSelectedItem().toString()));
     		}
     	});
     	

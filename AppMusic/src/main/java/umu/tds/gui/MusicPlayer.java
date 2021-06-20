@@ -136,16 +136,14 @@ public class MusicPlayer extends JPanel {
 	    return new Dimension(500, 500);
 	}
 	
-	//Cambiado a List para poder usar Arraylist de la busqueda
-	public void setCanciones(List<Cancion> canciones) {
+	public void setCanciones(List<Cancion> list) {
 		DefaultTableModel modeloTablaCanciones = (DefaultTableModel) table.getModel();
 		modeloTablaCanciones.setRowCount(0);
-		for(Cancion s : canciones) {
+		for(Cancion s : list) {
 			modeloTablaCanciones.addRow(new Object[] {s.getNombre(), s.getInterprete(), s.getId()});
 			//System.out.println("added: "+ s.getNombre() + " a reproducciones recientes");
 		}
 	}
-	
 	public void setListaTitulo(String titulo) {
 		TituloLista.setText(titulo);
 	}

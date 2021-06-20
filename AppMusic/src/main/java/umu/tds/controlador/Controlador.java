@@ -61,7 +61,7 @@ public class Controlador {
 	public static Controlador getControlador() {
 		if(controlador==null) controlador = new Controlador();
 		return controlador;
-	}
+	} 
 	
 	public Usuario getUser() {
 		return user;
@@ -119,21 +119,14 @@ public class Controlador {
 
 	//está bien? basado en ejercicio 6 boletin 4
 	public List<Cancion> busqueda(String nombre, String interprete, String estilo){
-		List<Cancion> l = controlador.getCancionesLocales();
-		//for(Cancion c:l)System.out.println(c.getNombre());
-		List<Cancion> listaBusqueda = controlador.getCancionesLocales().stream() //getCancionesLocales o getCanciones a CatalogoCanciones?
-											.filter(x -> nombre == "" || x.getNombre().contains(nombre))
-											.filter(x -> estilo == "" || x.getEstilo().contentEquals(estilo))
-											.filter(x -> interprete == "" || x.getInterprete().contains(interprete)).collect(Collectors.toList());
-		//controlador.getCancionesLocales().stream()
-		//		.filter(x -> nombre == "" || x.getNombre().contains(nombre))
-		//		.filter(x -> estilo == "" || x.getEstilo().contains(estilo))
-		//		.filter(x -> interprete == "" || x.getInterprete().contains(interprete)).forEach(e -> System.out.println(e.getNombre()));
-		//		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
-		///.filter(x -> nombre == "" || x.getNombre().contentEquals(nombre))
-		//.filter(x -> estilo == "" || x.getNombre().contentEquals(estilo))
-		//.filter(x -> interprete == "" || x.getNombre().contentEquals(interprete)).collect(Collectors.toList());
-		return listaBusqueda; 
+		
+		System.out.println("Busqueda || nombre: " + nombre + " || interprete: " + interprete + "  ||  estilo: " + estilo);
+		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
+											.filter(x -> nombre == "" || x.getNombre().toLowerCase().contains(nombre.toLowerCase()))  //Contains para una búsqueda "inteligente"
+											.filter(x -> estilo == "" || x.getEstilo().toLowerCase().contains(estilo.toLowerCase()))  // TolowerCase para buscar sin discriminar mayusculas
+											.filter(x -> interprete == "-" || x.getInterprete().toLowerCase().contains(interprete.toLowerCase())).collect(Collectors.toList());
+		
+		return listaBusqueda;
 	}
 	
 
