@@ -277,7 +277,7 @@ public class Principal {
         	public void actionPerformed(ActionEvent e) {
         		
         		//Creamos las listas 
-        		listaSeleccion = new ArrayList<Cancion>();
+        		//listaSeleccion = new ArrayList<Cancion>();
         		listaSeleccion2 = new ArrayList<Cancion>();
 
         		
@@ -360,9 +360,14 @@ public class Principal {
 
         BuscarNuevaLista.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
-    			 
-    	        //ArrayList<Cancion> listaSeleccion = new ArrayList();
-    	        listaSeleccion2 = new ArrayList<Cancion>(); 
+    			
+    			//Vaciamos el primero modelo y su lista
+    			while (modelo.getRowCount() > 0) {
+    				modelo.removeRow(0);
+    			}
+    	        listaSeleccion = new ArrayList<Cancion>();
+    	        
+    	        //listaSeleccion2 = new ArrayList<Cancion>(); 
     			//comboBox_TipoCanciones.getSelectedItem(); 
     			String titulo = textTituloNuevaLista.getText();
     			String interprete = textInterpreteNuevaLista.getText();
@@ -414,6 +419,7 @@ public class Principal {
     		public void actionPerformed(ActionEvent e) {
     			
     			int row = table_2.getSelectedRow();
+    			if(row>-1) {
     			String title = (String) table_2.getValueAt(row,0);
     			String interp = (String) table_2.getValueAt(row,1);
 	        	Vector<String> v = new Vector<String>();
@@ -426,6 +432,7 @@ public class Principal {
 	            //se saca de la misma posición de la lista
 	            listaSeleccion.add(listaSeleccion2.get(row)); //addLast el que cogemos de la posición "row"
 	            listaSeleccion2.remove(row);
+    			}
 
     		}
     	});
@@ -441,6 +448,7 @@ public class Principal {
     		public void actionPerformed(ActionEvent e) {
     			
     			int row = table.getSelectedRow();
+    			if(row>-1) {
     			String title = (String) table.getValueAt(row,0);
     			String interp = (String) table.getValueAt(row,1);
 	        	Vector<String> v = new Vector<String>();
@@ -452,7 +460,7 @@ public class Principal {
 	            //se saca de la misma posición de la lista
 	            listaSeleccion2.add(listaSeleccion.get(row)); //addLast el que cogemos de la posición "row"
 	            listaSeleccion.remove(row);
-
+    			}
     		}
     	});
         
