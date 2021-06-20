@@ -372,7 +372,7 @@ public class Principal {
 
         BuscarNuevaLista.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
-    			
+    			 
     	        //ArrayList<Cancion> listaSeleccion = new ArrayList();
     	        listaSeleccion2 = new ArrayList<Cancion>(); 
     			//comboBox_TipoCanciones.getSelectedItem(); 

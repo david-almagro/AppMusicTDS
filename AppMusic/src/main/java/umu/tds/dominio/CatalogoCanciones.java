@@ -3,8 +3,12 @@ package umu.tds.dominio;
 import java.util.ArrayList;
 import java.util.List;
 
+import umu.tds.dao.DAOException;
+import umu.tds.dao.FactoriaDAO;
+
 public class CatalogoCanciones {
-	
+	private FactoriaDAO factoria;
+
 	//Patron Singleton de unica instanciaa
 	private static CatalogoCanciones unicaInstancia;
 	private ArrayList<Cancion> canciones;  //mapa??? o Set
@@ -12,6 +16,18 @@ public class CatalogoCanciones {
 	private CatalogoCanciones() {
 		canciones = new ArrayList<Cancion>();
 		
+		try {
+			factoria = FactoriaDAO.getInstancia();
+			
+			List<Cancion> listaCancionesDAO = factoria.getCancionDAO().getAllCanciones();
+			
+			for(Cancion c : listaCancionesDAO){
+				canciones.add(c);
+			}
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static CatalogoCanciones getUnicaInstancia() {
