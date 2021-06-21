@@ -43,6 +43,13 @@
 	    <artifactId>jgoodies-common</artifactId>
 	    <version>1.8.1</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+	<dependency>
+	    <groupId>com.itextpdf</groupId>
+	    <artifactId>itextpdf</artifactId>
+	    <version>5.5.0</version>
+	</dependency>
+
 	<!-- actualizado el looks a la 2.5.2 en vez de la 2.4.1 -->	
 	<dependency>
 	    <groupId>com.jgoodies</groupId>

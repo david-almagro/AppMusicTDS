@@ -9,6 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.DocumentException;
+
 import javax.swing.JScrollPane;
 
 import umu.tds.controlador.Controlador;
@@ -25,6 +28,7 @@ import java.awt.Insets;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -299,7 +303,7 @@ public class Principal {
         		
     			//Vaciamos ambos modelos
     			while (modelo.getRowCount() > 0) {
-    				modelo.removeRow(0);
+    				modelo.removeRow(0); 
     			}
     			while (modelo2.getRowCount() > 0) {
     				modelo2.removeRow(0);
@@ -495,8 +499,9 @@ public class Principal {
     			System.out.printf(c.getInterprete());
     			System.out.printf("\n");
     			}
-    			JOptionPane.showMessageDialog(frame, "Lista creada", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
+    			JOptionPane.showMessageDialog(frame, "Lista creada satisfactoriamente", "Lista creada", JOptionPane.INFORMATION_MESSAGE);
     			controlador.crearPlaylist(nombreNuevaLista.getText(),listaSeleccion2);
+				panel_CreacionLista.setVisible(false);
 
     		}
     	});
@@ -507,6 +512,15 @@ public class Principal {
         gbc_btnCancelarNuevaLista.gridx = 4;
         gbc_btnCancelarNuevaLista.gridy = 7;
         panel_CreacionLista.add(btnCancelarNuevaLista, gbc_btnCancelarNuevaLista);
+        
+        btnCancelarNuevaLista.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			
+				panel_CreacionLista.setVisible(false);
+
+    		}
+    	});
+
         
         JPanel panel_Reciente = new JPanel();
         panelCentral.add(panel_Reciente, "panel_Reciente");
@@ -576,7 +590,7 @@ public class Principal {
     			
     			listaPlaylistCanciones = new ArrayList<Cancion>();
 
-    			JOptionPane.showMessageDialog(frame, "Lista cargada", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
+    			JOptionPane.showMessageDialog(frame, "Lista cargada", "Error, nombre de lista no válido", JOptionPane.INFORMATION_MESSAGE);
     			
     			
     			int row = tablaPlaylists.getSelectedRow();
@@ -736,7 +750,15 @@ public class Principal {
 		btnPDF.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				cardLayout.show(panelCentral, "card_PDF");
+				try {
+					controlador.exportarPDF();
+					JOptionPane.showMessageDialog(frame, "PDF creado satisfactoriamente","Exportación a PDF realizada", JOptionPane.INFORMATION_MESSAGE);
+
+				} catch (FileNotFoundException | DocumentException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//cardLayout.show(panelCentral, "card_PDF");
 				//panel_MisListas.setVisible(true);
 				//panel_Listas.setVisible(true);
 				

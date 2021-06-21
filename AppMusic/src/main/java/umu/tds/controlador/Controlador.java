@@ -1,6 +1,8 @@
 package umu.tds.controlador;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -26,6 +28,17 @@ import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
 import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
+
+//Añadido en classpath
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.BaseColor;
+
 
 public class Controlador {
 
@@ -238,6 +251,30 @@ public class Controlador {
 		List<Cancion> listaTop10 = cancionesLocales.stream()
 			.sorted(Comparator.comparingInt(Cancion::getNumReproducciones).reversed()).limit(10).collect(Collectors.toList());
 		return listaTop10;
+		
+	}
+	
+	public void exportarPDF() throws FileNotFoundException, DocumentException {
+		String path = "C:\\Users\\malwt\\git\\AppMusicTDS\\Listas.pdf";
+		File f = new File(path);
+		if(f.exists()) f.delete();
+		FileOutputStream file = new FileOutputStream(path);
+		Document doc = new Document();
+		PdfWriter.getInstance(doc,file);
+		doc.open();
+        doc.newPage();
+		doc.add(new Phrase("Usuario: ".concat(user.getUser().concat("\n\n")),FontFactory.getFont(FontFactory.COURIER,25,Font.BOLD,new BaseColor(0,0,0))));
+		for(ListaCanciones l:getListas()) {
+			doc.add(new Phrase("Playlist: ".concat(l.getNombre().concat("\n")),FontFactory.getFont(FontFactory.COURIER,20,Font.BOLD,new BaseColor(0,0,0))));
+		for(Cancion c:l.getCanciones()) {
+			doc.add(new Phrase("\tNombre: ".concat(c.getNombre().concat("\n")),FontFactory.getFont(FontFactory.COURIER,15,Font.NORMAL,new BaseColor(0,0,0))));
+			doc.add(new Phrase("\tAutor: ".concat(c.getInterprete().concat("\n\n")),FontFactory.getFont(FontFactory.COURIER,15,Font.NORMAL,new BaseColor(0,0,0))));
+		}
+		doc.add(new Phrase("\n",FontFactory.getFont(FontFactory.COURIER,15,Font.BOLD,new BaseColor(0,0,0))));
+		}
+		
+		doc.close();
+
 		
 	}
 	
