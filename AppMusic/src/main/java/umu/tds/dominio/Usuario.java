@@ -118,4 +118,8 @@ public class Usuario {
 		return listas.add(lista);
 	}
 	
+	public void hacerPremium() {
+		premium=true;
+	}
+	
 }

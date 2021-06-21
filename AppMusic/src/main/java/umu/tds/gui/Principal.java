@@ -132,7 +132,15 @@ public class Principal {
 		JButton btnHaztePremium = new JButton("Hazte premium");
 		panel_top.add(btnHaztePremium);
 		btnHaztePremium.setAlignmentX(1.0f);
-
+		btnHaztePremium.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			//Estilo musical 		
+				frame.dispose();
+				Premium premium = new Premium();
+				premium.hacerVisible();
+    		}
+    	});
+    	
 		
 		
 		//Añadida funcionalidad logout
@@ -718,9 +726,9 @@ public class Principal {
 		
 		
 		JButton btnTop10 = new JButton("Top 10 canciones");
-		btnTop10.addMouseListener(new MouseAdapter() {
+		btnTop10.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void actionPerformed(ActionEvent e) {
     			while (modelo.getRowCount() > 0) {
     				modelo.removeRow(0);
     			}
@@ -747,9 +755,9 @@ public class Principal {
 		toolBar.add(btnTop10);
 		
 		JButton btnPDF = new JButton("Generar PDF");
-		btnPDF.addMouseListener(new MouseAdapter() {
+		btnPDF.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				try {
 					controlador.exportarPDF();
 					JOptionPane.showMessageDialog(frame, "PDF creado satisfactoriamente","Exportación a PDF realizada", JOptionPane.INFORMATION_MESSAGE);

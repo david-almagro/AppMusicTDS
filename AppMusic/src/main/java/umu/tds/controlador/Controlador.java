@@ -278,6 +278,10 @@ public class Controlador {
 		
 	}
 	
+	public void hacerPremium() {
+		user.hacerPremium();
+	}
+	
 }
 
 	
