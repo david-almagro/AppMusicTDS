@@ -30,7 +30,7 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		propiedades.add(new Propiedad("estilo", cancion.getEstilo()));
 		propiedades.add(new Propiedad("rutaFichero", cancion.getRutaFichero()));
 		// TODO: numReproducciones??
-		//propiedades.add(new Propiedad("numReproducciones", String.valueOf(cancion.getNumReproducciones())));
+		propiedades.add(new Propiedad("numReproducciones", String.valueOf(cancion.getNumReproducciones())));
 				
 		Entidad entidad = new Entidad();
 		entidad.setNombre("cancion");
@@ -56,8 +56,9 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		String interprete = servicioPersistencia.recuperarPropiedadEntidad(entidad, "interprete");
 		String estilo = servicioPersistencia.recuperarPropiedadEntidad(entidad, "estilo");
 		String rutaFichero = servicioPersistencia.recuperarPropiedadEntidad(entidad, "rutaFichero");
+		int numReproducciones = Integer.parseInt(servicioPersistencia.recuperarPropiedadEntidad(entidad, "numReproducciones"));
 		
-		return new Cancion(nombre, interprete, estilo, rutaFichero);
+		return new Cancion(nombre, interprete, estilo, rutaFichero, numReproducciones);
 		
 	}
 

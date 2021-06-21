@@ -2,6 +2,7 @@ package umu.tds.dominio;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Usuario {
 	
@@ -109,6 +110,12 @@ public class Usuario {
 	//añadir cancion a recientes
 	public void addRecientes(Cancion cancion) {
 		recientes.addCancion(cancion);
+	}
+	
+	public boolean crearPlaylist(String nombre, List<Cancion> canciones) {
+		ListaCanciones lista = new ListaCanciones(nombre);
+		for(Cancion c:canciones) lista.addCancion(c);
+		return listas.add(lista);
 	}
 	
 }

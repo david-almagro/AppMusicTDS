@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -134,6 +135,7 @@ public class Controlador {
 	public void reproducirCancion(Cancion cancion) { //placeholder que solo guarda en recientes
 		// TODO: esta línea da null pointer exception
 		user.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
+		cancion.aumentarNumReproducciones();
 		
 		URL uri = null;
 		try {
@@ -222,6 +224,21 @@ public class Controlador {
 	
 	public LinkedList<String> getTiposCanciones(){
 		return tiposCancion;
+	}
+	
+	public boolean crearPlaylist(String nombre, List<Cancion> canciones) {
+		return user.crearPlaylist(nombre, canciones);	
+	}
+	
+	public boolean usuarioPremium() {
+		return user.isPremium();
+	}
+	
+	public List<Cancion> top10(){
+		List<Cancion> listaTop10 = cancionesLocales.stream()
+			.sorted(Comparator.comparingInt(Cancion::getNumReproducciones).reversed()).limit(10).collect(Collectors.toList());
+		return listaTop10;
+		
 	}
 	
 }

@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.dominio.Cancion;
+import umu.tds.dominio.ListaCanciones;
 
 //import umu.tds.controlador.Controlador;
 
@@ -49,14 +50,19 @@ public class Principal {
 	private JFrame frame;
 	private JTextField txtTitulo;
 	private JTextField txtInterprete;
-	private JTextField textField;
+	private JTextField nombreNuevaLista;
 	private JTextField textInterpreteNuevaLista;
 	private JTextField textTituloNuevaLista;
 	private JTable table;
 	private JTable table_2;
+	private JTable tablaPlaylists;
+	private JTable tablaTop10;
+
 	
     private ArrayList<Cancion> listaSeleccion;
     private ArrayList<Cancion> listaSeleccion2;
+    private ArrayList<ListaCanciones> listaPlaylists;
+    private ArrayList<Cancion> listaPlaylistCanciones;
     
 
 	/**
@@ -118,9 +124,11 @@ public class Principal {
 		lblHola.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHola.setAlignmentX(1.0f);
 		
+
 		JButton btnHaztePremium = new JButton("Hazte premium");
 		panel_top.add(btnHaztePremium);
 		btnHaztePremium.setAlignmentX(1.0f);
+
 		
 		
 		//Añadida funcionalidad logout
@@ -138,9 +146,7 @@ public class Principal {
 		panel_top.add(btnLogout);
 		
 		//Si el usuario es premium, desactivar botón de hacerse premium
-		if(controlador.getUser().isPremium())
-			btnHaztePremium.setEnabled(false);
-    	
+
     	
     	//Layerede Panel central
 
@@ -161,6 +167,15 @@ public class Principal {
     	DefaultTableModel modelo2 = new DefaultTableModel();
     	for (String s : columns) {modelo2.addColumn(s);}
     	
+    	DefaultTableModel modeloLista = new DefaultTableModel();
+    	modeloLista.addColumn("Lista");
+    	
+    	DefaultTableModel modeloTop10 = new DefaultTableModel();{
+    	modeloTop10.addColumn("Canción"); 
+    	modeloTop10.addColumn("Reproducciones");
+    	}
+
+
     	JPanel panel_Explorar_centro = new JPanel();
     	panel_Explorar_centro.setAlignmentX(0.0f);
     	panel_Explorar_centro.setAlignmentY(0.0f);
@@ -255,10 +270,10 @@ public class Principal {
         JPanel panel = new JPanel();
         panel_NuevaLista.add(panel, BorderLayout.NORTH);
         
-        textField = new JTextField();
-        textField.setText("Lista Nueva");
-        textField.setColumns(25);
-        panel.add(textField);
+        nombreNuevaLista = new JTextField();
+        nombreNuevaLista.setText("Lista Nueva");
+        nombreNuevaLista.setColumns(25);
+        panel.add(nombreNuevaLista);
         
         JButton CrearLista = new JButton("Crear");
         panel.add(CrearLista);
@@ -290,8 +305,8 @@ public class Principal {
     				modelo2.removeRow(0);
     			}
         		
-        		String nuevalistaNombre = textField.getText();
-        		if (controlador.existeLista(textField.getText())) {
+        		String nuevalistaNombre = nombreNuevaLista.getText();
+        		if (controlador.existeLista(nombreNuevaLista.getText())) {
         			JOptionPane.showMessageDialog(frame, "Ya existe una lista con ese nombre", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
         		}
         		else {
@@ -481,7 +496,7 @@ public class Principal {
     			System.out.printf("\n");
     			}
     			JOptionPane.showMessageDialog(frame, "Lista creada", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
-
+    			controlador.crearPlaylist(nombreNuevaLista.getText(),listaSeleccion2);
 
     		}
     	});
@@ -503,6 +518,115 @@ public class Principal {
         panel_Reciente.add(musicPlayer_Recientes);
     	panel_NuevaLista.setVisible(false);
 		
+        JPanel panel_MisListas = new JPanel();
+        panelCentral.add(panel_MisListas, "card_MisListas");
+        panel_MisListas.setLayout(new BorderLayout(0, 0));
+        
+        
+        JPanel panel_Listas = new JPanel();
+        panel_MisListas.add(panel_Listas, BorderLayout.CENTER);
+        GridBagLayout gbl_panel_Listas = new GridBagLayout();
+        gbl_panel_Listas.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_Listas.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_Listas.columnWeights = new double[]{0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panel_Listas.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        panel_Listas.setLayout(gbl_panel_Listas);
+        panel_Listas.setVisible(false);
+    	
+
+        
+        JScrollPane scrollPaneListas = new JScrollPane();
+        GridBagConstraints gbc_scrollPaneListas = new GridBagConstraints();
+        gbc_scrollPaneListas.gridwidth = 2;
+        gbc_scrollPaneListas.gridheight = 5;
+        gbc_scrollPaneListas.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPaneListas.fill = GridBagConstraints.BOTH;
+        gbc_scrollPaneListas.gridx = 1;
+        gbc_scrollPaneListas.gridy = 2;
+        panel_Listas.add(scrollPaneListas, gbc_scrollPaneListas); 
+        
+    	MusicPlayer musicPlayer_listas = new MusicPlayer();
+    	GridBagConstraints gbc_musicPlayer_listas = new GridBagConstraints();
+        gbc_musicPlayer_listas.gridwidth = 2;
+        gbc_musicPlayer_listas.gridheight = 5;
+        gbc_musicPlayer_listas.insets = new Insets(0, 0, 5, 5);
+        gbc_musicPlayer_listas.fill = GridBagConstraints.BOTH;
+        gbc_musicPlayer_listas.gridx = 4;
+        gbc_musicPlayer_listas.gridy = 2;
+        panel_Listas.add(musicPlayer_listas, gbc_musicPlayer_listas);
+
+        
+		/*
+		 * GridBagConstraints gbc_musicPlayer_listas = new GridBagConstraints();
+		 * gbc_musicPlayer_listas.gridwidth = 2; gbc_musicPlayer_listas.gridheight = 5;
+		 * gbc_musicPlayer_listas.insets = new Insets(0, 0, 5, 5);
+		 * gbc_musicPlayer_listas.fill = GridBagConstraints.BOTH;
+		 * gbc_musicPlayer_listas.gridx = 4; gbc_musicPlayer_listas.gridy = 2;
+		 * panel_CreacionLista.add(musicPlayer_listas, gbc_musicPlayer_listas);
+		 */
+        
+        JButton btnCargarPlaylists = new JButton("Cargar");
+        GridBagConstraints gbc_btnCargarPlaylists = new GridBagConstraints();
+        gbc_btnCargarPlaylists.insets = new Insets(0, 0, 0, 5);
+        gbc_btnCargarPlaylists.gridx = 2;
+        gbc_btnCargarPlaylists.gridy = 7;
+        panel_Listas.add(btnCargarPlaylists, gbc_btnCargarPlaylists);
+        btnCargarPlaylists.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			
+    			listaPlaylistCanciones = new ArrayList<Cancion>();
+
+    			JOptionPane.showMessageDialog(frame, "Lista cargada", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
+    			
+    			
+    			int row = tablaPlaylists.getSelectedRow();
+    			System.out.printf("Playlist numero %d\n",row);
+    			if(row>-1) {
+    			ListaCanciones lista = listaPlaylists.get(row);
+    			musicPlayer_listas.setCanciones(lista.getCanciones());    			
+    			}
+    			
+    			//tablaCanciones = new JTable(modeloLista2);
+    	        
+    	        //scrollPaneListas2.setViewportView(tablaCanciones);
+
+
+    		}
+    	});
+
+        table = new JTable(modelo);
+        scrollPane_1.setViewportView(table);
+        
+        
+        
+        //TOP10
+    	
+    	JPanel panel_Top10 = new JPanel();
+    	panelCentral.add(panel_Top10, "card_Top10");
+    	panel_Top10.setVisible(false);
+    	panel_Top10.setLayout(new BoxLayout(panel_Top10, BoxLayout.PAGE_AXIS));
+    	
+    	JPanel panel_Top10_centro = new JPanel();
+    	panel_Top10_centro.setAlignmentX(0.0f);
+    	panel_Top10_centro.setAlignmentY(0.0f);
+    	panel_Top10.add(panel_Top10_centro);
+    	GridBagLayout gbl_panel_Top10_centro = new GridBagLayout();
+    	gbl_panel_Top10_centro.columnWidths = new int[]{24, 117, 114, 123, 0, 0};
+    	gbl_panel_Top10_centro.rowHeights = new int[]{34, 0, 224, 0, 0};
+    	gbl_panel_Top10_centro.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+    	gbl_panel_Top10_centro.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+    	panel_Top10_centro.setLayout(gbl_panel_Top10_centro);
+    	
+    	
+    	MusicPlayer musicPlayer_Top10 = new MusicPlayer();
+    	
+    	GridBagConstraints gbc_musicPlayer_Top10 = new GridBagConstraints();
+    	gbc_musicPlayer_Top10.gridwidth = 3;
+    	gbc_musicPlayer_Top10.insets = new Insets(0, 0, 5, 5);
+    	gbc_musicPlayer_Top10.fill = GridBagConstraints.BOTH;
+    	gbc_musicPlayer_Top10.gridx = 1;
+    	gbc_musicPlayer_Top10.gridy = 2;
+    	panel_Top10_centro.add(musicPlayer_Top10, gbc_musicPlayer_Top10);
     	
     	//BOTONERA
 		JToolBar toolBar = new JToolBar();
@@ -523,10 +647,6 @@ public class Principal {
 		toolBar.add(btnExplorar);
 		
 		JButton btnNuevaLista = new JButton("Nueva lista");
-		btnNuevaLista.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		btnNuevaLista.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -534,7 +654,7 @@ public class Principal {
 				panel_CreacionLista.setVisible(false);
 			}
 		});
-		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Nueva_Lista.png"));
+		btnNuevaLista.setIcon(new ImageIcon("resources\\iconos\\Nueva_Lista.png"));
 		toolBar.add(btnNuevaLista);
 		
 		JButton btnReciente = new JButton("Reciente");
@@ -543,22 +663,95 @@ public class Principal {
 			public void mouseClicked(MouseEvent e) {
 				cardLayout.show(panelCentral, "panel_Reciente");
 		        musicPlayer_Recientes.setCanciones(controlador.getReciente().getCanciones()); //TODO: tratar bien las listas de canciones
-				panel_CreacionLista.setVisible(false);
+				//panel_CreacionLista.setVisible(false);
 			}
 		});
 
-		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Reciente.png"));
+		btnReciente.setIcon(new ImageIcon("resources\\iconos\\Reciente.png"));
 		toolBar.add(btnReciente);
 		
+
+    	
 		JButton btnMisListas = new JButton("Mis listas");
 		btnMisListas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				cardLayout.show(panelCentral, "card_MisListas");
+				//panel_MisListas.setVisible(true);
+				panel_Listas.setVisible(true);
+				
+    			while (modeloLista.getRowCount() > 0) {
+    				modeloLista.removeRow(0);
+    			}
+				List<ListaCanciones> lista = controlador.getListas();
+				listaPlaylists = new ArrayList<ListaCanciones>();
+				for(ListaCanciones l : lista) {
+    	        	Vector<String> v = new Vector<String>();
+    	        	v.add(l.getNombre());
+    	            modeloLista.addRow(v);
+    	            listaPlaylists.add(l);
+    	            //de esta forma tendrán el mismo orden y con el mismo índice
+
+    	        }
+    	        tablaPlaylists = new JTable(modeloLista);
+    	        scrollPaneListas.setViewportView(tablaPlaylists);
+
+				
 			}
 		});
-		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
+		btnMisListas.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
 		toolBar.add(btnMisListas);
 		
+		
+		JButton btnTop10 = new JButton("Top 10 canciones");
+		btnTop10.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+    			while (modelo.getRowCount() > 0) {
+    				modelo.removeRow(0);
+    			}
+				cardLayout.show(panelCentral, "card_Top10");
+				//panel_MisListas.setVisible(true);
+				//panel_Listas.setVisible(true);
+				List<Cancion> l = controlador.top10();
+				musicPlayer_Top10.setCanciones(l);
+				/*
+				List<Cancion> l = controlador.top10();
+				for(Cancion c:l) {
+		        	Vector<String> v = new Vector<String>();
+		        	v.add(c.getNombre());
+		        	v.add(String.valueOf(c.getNumReproducciones()));
+					modeloTop10.addRow(v);
+				}
+		        tablaTop10 = new JTable(modeloTop10);
+		        panel_Top10_centro.setViewportView(tablaTop10);
+				*/
+				
+			}
+		});
+		btnTop10.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
+		toolBar.add(btnTop10);
+		
+		JButton btnPDF = new JButton("Generar PDF");
+		btnPDF.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				cardLayout.show(panelCentral, "card_PDF");
+				//panel_MisListas.setVisible(true);
+				//panel_Listas.setVisible(true);
+				
+			}
+		});
+		btnPDF.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
+		toolBar.add(btnPDF);
+		
+		
+		if(controlador.getUser().isPremium())
+			btnHaztePremium.setEnabled(false);
+		else {
+			btnTop10.setEnabled(false);
+			btnPDF.setEnabled(false);
+		}
     	
 
 
