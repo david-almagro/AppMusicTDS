@@ -26,6 +26,7 @@ import umu.tds.dao.IAdaptadorUsuarioDAO;
 import umu.tds.dominio.Cancion;
 import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
+import umu.tds.dominio.Descuento;
 import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
 
@@ -280,6 +281,11 @@ public class Controlador {
 	
 	public void hacerPremium() {
 		user.hacerPremium();
+	}
+
+	public List<Descuento> getDescuentosAplicables() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
