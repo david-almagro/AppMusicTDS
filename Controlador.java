@@ -1,8 +1,6 @@
 package umu.tds.controlador;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -10,7 +8,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +15,6 @@ import java.util.stream.Collectors;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaPlayer.Status;
 import umu.tds.dao.AdaptadorCancionDAO;
 import umu.tds.dao.AdaptadorUsuarioDAO;
 import umu.tds.dao.DAOException;
@@ -27,20 +23,8 @@ import umu.tds.dao.IAdaptadorUsuarioDAO;
 import umu.tds.dominio.Cancion;
 import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
-import umu.tds.dominio.Descuento;
 import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
-
-//Añadido en classpath
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.BaseColor;
-
 
 public class Controlador {
 
@@ -77,7 +61,7 @@ public class Controlador {
 	public static Controlador getControlador() {
 		if(controlador==null) controlador = new Controlador();
 		return controlador;
-	} 
+	}
 	
 	public Usuario getUser() {
 		return user;
@@ -137,8 +121,7 @@ public class Controlador {
 	public List<Cancion> busqueda(String nombre, String interprete, String estilo){
 		
 		System.out.println("Busqueda || nombre: " + nombre + " || interprete: " + interprete + "  ||  estilo: " + estilo);
-		//List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
-		List<Cancion> listaBusqueda = getCancionesLocales().stream()
+		List<Cancion> listaBusqueda = CatalogoCanciones.getUnicaInstancia().getCanciones().stream()
 											.filter(x -> nombre == "" || x.getNombre().toLowerCase().contains(nombre.toLowerCase()))  //Contains para una búsqueda "inteligente"
 											.filter(x -> estilo == "" || x.getEstilo().toLowerCase().contains(estilo.toLowerCase()))  // TolowerCase para buscar sin discriminar mayusculas
 											.filter(x -> interprete == "-" || x.getInterprete().toLowerCase().contains(interprete.toLowerCase())).collect(Collectors.toList());
@@ -150,7 +133,6 @@ public class Controlador {
 	public void reproducirCancion(Cancion cancion) { //placeholder que solo guarda en recientes
 		// TODO: esta línea da null pointer exception
 		user.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
-		cancion.aumentarNumReproducciones();
 		
 		URL uri = null;
 		try {
@@ -233,66 +215,12 @@ public class Controlador {
 		}
 	}
 	
-	public Boolean isMediaPlayerPlaying(){
-		if (this.mediaPlayer == null)
-			return false;
-		return this.mediaPlayer.getStatus().equals(Status.PLAYING);
-	}
-	
 	public LinkedList<Cancion> getCancionesLocales(){
 		return cancionesLocales;
 	}
 	
 	public LinkedList<String> getTiposCanciones(){
 		return tiposCancion;
-	}
-	
-	public boolean crearPlaylist(String nombre, List<Cancion> canciones) {
-		return user.crearPlaylist(nombre, canciones);	
-	}
-	
-	public boolean usuarioPremium() {
-		return user.isPremium();
-	}
-	
-	public List<Cancion> top10(){
-		List<Cancion> listaTop10 = cancionesLocales.stream()
-			.sorted(Comparator.comparingInt(Cancion::getNumReproducciones).reversed()).limit(10).collect(Collectors.toList());
-		return listaTop10;
-		
-	}
-	
-	public void exportarPDF() throws FileNotFoundException, DocumentException {
-		String path = "C:\\Users\\malwt\\git\\AppMusicTDS\\Listas.pdf";
-		File f = new File(path);
-		if(f.exists()) f.delete();
-		FileOutputStream file = new FileOutputStream(path);
-		Document doc = new Document();
-		PdfWriter.getInstance(doc,file);
-		doc.open();
-        doc.newPage();
-		doc.add(new Phrase("Usuario: ".concat(user.getUser().concat("\n\n")),FontFactory.getFont(FontFactory.COURIER,25,Font.BOLD,new BaseColor(0,0,0))));
-		for(ListaCanciones l:getListas()) {
-			doc.add(new Phrase("Playlist: ".concat(l.getNombre().concat("\n")),FontFactory.getFont(FontFactory.COURIER,20,Font.BOLD,new BaseColor(0,0,0))));
-		for(Cancion c:l.getCanciones()) {
-			doc.add(new Phrase("\tNombre: ".concat(c.getNombre().concat("\n")),FontFactory.getFont(FontFactory.COURIER,15,Font.NORMAL,new BaseColor(0,0,0))));
-			doc.add(new Phrase("\tAutor: ".concat(c.getInterprete().concat("\n\n")),FontFactory.getFont(FontFactory.COURIER,15,Font.NORMAL,new BaseColor(0,0,0))));
-		}
-		doc.add(new Phrase("\n",FontFactory.getFont(FontFactory.COURIER,15,Font.BOLD,new BaseColor(0,0,0))));
-		}
-		
-		doc.close();
-
-		
-	}
-	
-	public void hacerPremium() {
-		user.hacerPremium();
-	}
-
-	public List<Descuento> getDescuentosAplicables() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 }
