@@ -349,9 +349,11 @@ public class Principal {
         panel_CreacionLista.add(textInterpreteNuevaLista, gbc_textInterpreteNuevaLista);
         textInterpreteNuevaLista.setColumns(10);
         
+        JComboBox<String> comboBox_1 = new JComboBox<String>();
+    	for(String tipoCancion : controlador.getTiposCanciones()) {
+    		comboBox_1.addItem(tipoCancion);        //Cargar los tipos de canciones de forma dinámica
+    	}        
        
-        JComboBox comboBox_1 = new JComboBox();
-        comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Jazz", "Pop", "Rock", "Punk", "Electronica"}));
         GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
         gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
         gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;

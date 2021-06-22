@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import umu.tds.dao.AdaptadorCancionDAO;
 import umu.tds.dao.AdaptadorUsuarioDAO;
 import umu.tds.dao.DAOException;
@@ -229,6 +230,12 @@ public class Controlador {
 				cancionesLocales.add(cancion);
 			}
 		}
+	}
+	
+	public Boolean isMediaPlayerPlaying(){
+		if (this.mediaPlayer == null)
+			return false;
+		return this.mediaPlayer.getStatus().equals(Status.PLAYING);
 	}
 	
 	public LinkedList<Cancion> getCancionesLocales(){

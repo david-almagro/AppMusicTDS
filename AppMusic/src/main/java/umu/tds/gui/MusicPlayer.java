@@ -47,44 +47,62 @@ public class MusicPlayer extends JPanel {
 		add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JButton btnAnterior = new JButton("");
-		btnAnterior.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnAnterior.setIcon(new ImageIcon("resources\\iconos\\Anterior.png"));
-		panel.add(btnAnterior);
 		
+		//Botón central play(>)   stop(||) 
 		JButton btnCentral = new JButton("");
 		btnCentral.addMouseListener(new MouseAdapter() {
-			boolean isPlaying = false;
+			Controlador cont = Controlador.getControlador();
     		@Override
 			public void mouseClicked(MouseEvent e) {					
-    			if(isPlaying) {
-					isPlaying = false;
+    			if(cont.isMediaPlayerPlaying()) {
 					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
-					Controlador.getControlador().pararCancion();
+					cont.pararCancion();
 				}
 				else {
-					isPlaying = true;
 					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Stop.png"));
 					int selectedRow = table.getSelectedRow();
 
 					//TODO: en un futuro se pedirá "reproducción por id" al controlador
 					// La idea es tener los id escondidos dentro de la tabla.
 					// estas siguientes lineas están mal pero representan funcionalidad por ahora.
-					Controlador.getControlador().reproducirCancionPorNombre( (String) table.getValueAt(selectedRow, 0));
-
+					cont.reproducirCancionPorNombre( (String) table.getValueAt(selectedRow, 0));
+				}
+			}
+		});		
+		btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
+		panel.add(btnCentral);
+		
+		
+		//Botón anterior 
+		JButton btnAnterior = new JButton("");
+		btnAnterior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = table.getSelectedRow();
+				if(selectedRow > 0) {
+					Controlador.getControlador().pararCancion();
+					Controlador.getControlador().reproducirCancionPorNombre( (String) table.getValueAt(selectedRow-1, 0));
+					table.changeSelection(selectedRow-1, 0, false, false);
+					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Stop.png"));
+				}
+			}
+		});
+		btnAnterior.setIcon(new ImageIcon("resources\\iconos\\Anterior.png"));
+		panel.add(btnAnterior);
+		
+		
+		JButton btnSiguiente = new JButton("");
+		btnSiguiente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = table.getSelectedRow();
+				if(selectedRow < table.getRowCount()-1 && 0 < table.getRowCount()) {
+					Controlador.getControlador().pararCancion();
+					Controlador.getControlador().reproducirCancionPorNombre( (String) table.getValueAt(selectedRow+1, 0));
+					table.changeSelection(selectedRow+1, 0, false, false);
+					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Stop.png"));
 
 				}
 			}
 		});
-		
-		
-		btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
-		panel.add(btnCentral);
-		
-		JButton btnSiguiente = new JButton("");
 		btnSiguiente.setIcon(new ImageIcon("resources\\iconos\\Siguiente.png"));
 		panel.add(btnSiguiente);
 		
@@ -94,24 +112,6 @@ public class MusicPlayer extends JPanel {
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
 			},
 			new String[] {
 				"Cancion", "Autor", "Id"
