@@ -9,7 +9,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,9 +31,15 @@ import umu.tds.dominio.Cancion;
 import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
 import umu.tds.dominio.Descuento;
+import umu.tds.dominio.DescuentoBase;
+import umu.tds.dominio.DescuentoLimitado;
+import umu.tds.dominio.DescuentoJovenes;
 import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
-
+import umu.tds.componente.Canciones;
+import umu.tds.componente.CancionesEvent;
+import umu.tds.componente.CancionesListener;
+import umu.tds.componente.CargadorCanciones;
 //Añadido en classpath
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -42,7 +51,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.BaseColor;
 
 
-public class Controlador {
+public class Controlador implements CancionesListener{
 
 	//patron Singletonn
 	private static Controlador controlador;
@@ -58,14 +67,16 @@ public class Controlador {
 	private MediaPlayer mediaPlayer;
 	private String tempPath = "temp";
 
+	private CargadorCanciones cargaCancionesXML = new CargadorCanciones();
 	
 	private Controlador() {
-//necesitamos tener el factoria para registrar y eso
+		//necesitamos tener el factoria para registrar y eso
 		try {
 			factoriaDAO = FactoriaDAO.getInstancia();
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}
+		cargaCancionesXML.addCancionListener(this);
 	}
 	
 	//No me acuerdo de donde me he sacado esta función
@@ -79,10 +90,13 @@ public class Controlador {
 		return controlador;
 	} 
 	
+	public double getDescuento(double precio){
+		return user.getDescuento().aplicarDescuento(precio);
+	}
+	
 	public Usuario getUser() {
 		return user;
 	}
-	
 	
 	public LinkedList<ListaCanciones> getListas() {
 		return user.getListas();
@@ -110,10 +124,19 @@ public class Controlador {
 		return user.getListas().stream().anyMatch(x -> x.getNombre().contentEquals(lista));
 	}
 	
-	public boolean registrar(String user, String password, String email, String nombre, String apellidos, String fechaNac) {
+	public boolean registrar(String user, String password, String email, String nombre, String apellidos, LocalDate fechaNac) {
 		if (!existeUsuario(user))
 		{
-			Usuario usuario = new Usuario(user, password, email, nombre, apellidos, fechaNac);
+			Descuento descuentoUsuario;
+			if(Period.between(fechaNac, LocalDate.now()).getYears() <= 20) {
+				descuentoUsuario = new DescuentoJovenes();
+			} else if(LocalDate.now().isBefore(LocalDate.of(2024, 7, 22))){
+				descuentoUsuario = new DescuentoLimitado();
+			} else  {
+				descuentoUsuario = new DescuentoBase();
+			}
+
+			Usuario usuario = new Usuario(user, password, email, nombre, apellidos, fechaNac, descuentoUsuario);
 			CatalogoUsuarios.getUnicaInstancia().newUsuario(usuario);
 			IAdaptadorUsuarioDAO udao = factoriaDAO.getUsuarioDAO();
 			udao.createUsuario(usuario);
@@ -189,7 +212,6 @@ public class Controlador {
 			if (s.getId().equals(cancionId))
 				reproducirCancion(s);
 		}
-		
 	}
 	
 	
@@ -200,7 +222,6 @@ public class Controlador {
 			if (s.getNombre().equals(tituloCancion))
 				reproducirCancion(s);
 		}
-		
 	}
 	
 
@@ -215,7 +236,6 @@ public class Controlador {
 	}
 	
 	public void inicializarCancionesLocales() throws IOException {
-		//TODO: Esto va aquí?
 		tiposCancion = new LinkedList<String>();
 
 		File srcCanciones = new File("resources/canciones");
@@ -238,6 +258,8 @@ public class Controlador {
 			return false;
 		return this.mediaPlayer.getStatus().equals(Status.PLAYING);
 	}
+	
+
 	
 	public LinkedList<Cancion> getCancionesLocales(){
 		return cancionesLocales;
@@ -291,8 +313,50 @@ public class Controlador {
 	}
 
 	public List<Descuento> getDescuentosAplicables() {
-		// TODO Auto-generated method stub
+		LinkedList<Descuento> aplicables = new LinkedList<Descuento>();
+
+		
 		return null;
+	}
+	
+	@Override
+	public void enteradoCargaCancion(CancionesEvent arg0) {
+		System.out.println("soy imbecil");
+		Canciones canciones = arg0.getNuevoCanciones();
+		for(umu.tds.componente.Cancion c : canciones.getCancion()) {
+			
+			String path = "resources/canciones";
+			Path fichCancion = Paths.get(path + "/" + c.getEstilo().toUpperCase() + "/" + c.getInterprete() + "-" + c.getTitulo() + ".mp3");
+			
+			//Si no existe la canción
+			if(!fichCancion.toFile().exists()) {
+				//Si no existe la carpeta del estilo, se crea
+				File theDir = new File( path + "/" + c.getEstilo().toUpperCase());
+				if (!theDir.exists()){
+				    theDir.mkdirs();
+				}
+							
+				try { //Intentamos cargar la canción
+					InputStream inStream = new URL(c.getURL()).openStream();
+					Files.copy(inStream, fichCancion);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			Cancion cancion = new Cancion(c.getTitulo(), c.getInterprete(), c.getEstilo(), fichCancion.toString()); //nombre, interprete, estilo, rutafichero
+			cancionesLocales.add(cancion);
+		}	
+	}
+	
+	public void cargarCanciones(File rutaCanciones) {
+		cargarCanciones(rutaCanciones.getAbsolutePath());
+	}
+	
+	public void cargarCanciones(String rutaCanciones) {
+		cargaCancionesXML.setArchivoCanciones(rutaCanciones);
 	}
 	
 }

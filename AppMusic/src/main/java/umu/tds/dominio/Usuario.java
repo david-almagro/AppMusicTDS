@@ -1,6 +1,6 @@
 package umu.tds.dominio;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +12,8 @@ public class Usuario {
 	private String email;
 	private String nombre;
 	private String apellidos;
-	private String fechaNac;
+	private LocalDate fechaNac;
+	private Descuento descuento;
 	private int id;
 	
 
@@ -23,7 +24,7 @@ public class Usuario {
 	private ListaRecientes recientes;
 
 
-	public Usuario(String user, String password, String email, String nombre, String apellidos, String fechaNac) {
+	public Usuario(String user, String password, String email, String nombre, String apellidos, LocalDate fechaNac, Descuento descuento) {
 		this.user = user;
 		this.password = password;
 		this.email = email;
@@ -32,6 +33,7 @@ public class Usuario {
 		this.fechaNac = fechaNac;
 		this.listas = new LinkedList<ListaCanciones>();
 		this.recientes = new ListaRecientes("Recientes");
+		this.descuento = descuento;
 		id = 0; // se establece al meterlo en el servicio de persistencia;
 	}
 
@@ -91,14 +93,22 @@ public class Usuario {
 		this.apellidos = apellidos;
 	}
 
-	public String getFechaNac() {
+	public LocalDate getFechaNac() {
 		return fechaNac;
 	}
 
-	public void setFechaNac(String fechaNac) {
+	public void setFechaNac(LocalDate fechaNac) {
 		this.fechaNac = fechaNac;
 	}
 
+	public void setDescuento(Descuento descuento) {
+		this.descuento = descuento;
+	}
+	
+	public Descuento getDescuento() {
+		return descuento;
+	}
+	
 	public LinkedList<ListaCanciones> getListas() {
 		return listas;
 	}

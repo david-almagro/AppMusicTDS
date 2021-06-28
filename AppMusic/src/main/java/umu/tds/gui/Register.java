@@ -13,6 +13,10 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -27,7 +31,7 @@ import javax.swing.JButton;
 
 public class Register {
 
-	private JFrame frame;
+	JFrame frame;
 	private JTextField textNombre;
 	private JTextField textApellidos;
 	private JTextField textEmail;
@@ -38,6 +42,7 @@ public class Register {
 	private JLabel lblContrasenaCheck;
 	private JLabel lblExisteUsuario;
 	private JLabel lblExisteEmail;
+	private static final double precio = 5.00;
 
 	/**
 	 * Launch the application.
@@ -361,7 +366,7 @@ public class Register {
 				//validamos los campos de texto del registro
 				if(valido) {
 				boolean registrado = Controlador.getControlador().registrar(textUsuario.getText(), new String(passwordField.getPassword()),
-						textEmail.getText(), textNombre.getText(), textApellidos.getText(), dateFechaNac.getDateFormatString());
+						textEmail.getText(), textNombre.getText(), textApellidos.getText(), dateFechaNac.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 				if(registrado) {
 					JOptionPane.showMessageDialog(frame, "Usuario registrado correctamente..\n","Registro realizado", JOptionPane.INFORMATION_MESSAGE);
 					frame.dispose();

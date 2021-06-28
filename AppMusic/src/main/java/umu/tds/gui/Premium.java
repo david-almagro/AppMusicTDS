@@ -16,7 +16,6 @@ import java.awt.GridBagConstraints;
 
 
 import umu.tds.controlador.Controlador;
-import umu.tds.dominio.Descuento;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -26,8 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
-import java.awt.SystemColor;
-import javax.swing.JComboBox;
 
 public class Premium {
 
@@ -39,13 +36,16 @@ public class Premium {
 	private JPasswordField passwordField;
 	private JButton btnAceptar;
 	private JButton btnCancelar;
-	private JLabel lblNewLabel_2;
 	private JButton btnRegistrar;
-	private JComboBox comboBox_descuentos;
-	private JLabel lblNewLabel_3;
+	private JLabel lblPrecio;
 	private JLabel lblDescuento;
+	private JLabel lblNewLabel_2;
+	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_5;
+	private JLabel lblNewLabel_6;
 
+	private final double precio = 5.00;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -145,19 +145,23 @@ public class Premium {
 		gbc_passwordField.gridy = 2;
 		panel_1.add(passwordField, gbc_passwordField);
 		
-		comboBox_descuentos = new JComboBox();
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 2;
-		gbc_comboBox.gridy = 4;
-		panel_1.add(comboBox_descuentos, gbc_comboBox);
 		
-    	comboBox_descuentos = new JComboBox<String>();
-    	for(Descuento descuento: Controlador.getControlador().getDescuentosAplicables()) {
-    		//TODO: Meter los descuentos aplicables y aplicarlos con el boton aplicar
-    		//comboBox_descuentos.addItem(tipoCancion);
-    	}
+		lblPrecio = new JLabel("Precio: ");
+		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		GridBagConstraints gbc_lblPrecio = new GridBagConstraints();
+		gbc_lblPrecio.insets = new Insets(0, 0, 5, 5);
+		gbc_lblPrecio.gridx = 1;
+		gbc_lblPrecio.gridy = 4;
+		panel_1.add(lblPrecio, gbc_lblPrecio);
+		
+		lblNewLabel_6 = new JLabel(String.valueOf(precio));
+		lblNewLabel_6.setForeground(Color.black);
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
+		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_6.gridx = 2;
+		gbc_lblNewLabel_6.gridy = 4;
+		panel_1.add(lblNewLabel_6, gbc_lblNewLabel_6);
 		
 		btnRegistrar = new JButton("Aplicar descuento");
 		btnRegistrar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -179,42 +183,29 @@ public class Premium {
 		lblDescuento = new JLabel("Descuento:");
 		lblDescuento.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblDescuento = new GridBagConstraints();
-		gbc_lblDescuento.anchor = GridBagConstraints.EAST;
 		gbc_lblDescuento.insets = new Insets(0, 0, 5, 5);
-		gbc_lblDescuento.gridx = 2;
+		gbc_lblDescuento.gridx = 1;
 		gbc_lblDescuento.gridy = 5;
 		panel_1.add(lblDescuento, gbc_lblDescuento);
 		
-		lblNewLabel_5 = new JLabel("-1,50");
+		lblNewLabel_5 = new JLabel(String.valueOf(precio-Controlador.getControlador().getDescuento(precio)));
 		lblNewLabel_5.setForeground(Color.RED);
 		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5.gridx = 3;
+		gbc_lblNewLabel_5.gridx = 2;
 		gbc_lblNewLabel_5.gridy = 5;
 		panel_1.add(lblNewLabel_5, gbc_lblNewLabel_5);
 		
 		lblNewLabel_2 = new JLabel("Precio final:");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setForeground(new Color(0, 0, 0));
+		lblNewLabel_2.setForeground(Color.BLACK);
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 16));
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_2.gridx = 2;
+		gbc_lblNewLabel_2.gridx = 1;
 		gbc_lblNewLabel_2.gridy = 6;
 		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
-		
-		lblNewLabel_3 = new JLabel("5,00");
-		lblNewLabel_3.setForeground(new Color(50, 205, 50));
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3.gridx = 3;
-		gbc_lblNewLabel_3.gridy = 6;
-		panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
 								
 								btnAceptar = new JButton("Aceptar");
 								btnAceptar.addActionListener(new ActionListener() {
@@ -227,6 +218,15 @@ public class Premium {
 										
 									}
 								});
+								
+								lblNewLabel_3 = new JLabel(String.valueOf(Controlador.getControlador().getDescuento(precio)));
+								lblNewLabel_3.setForeground(new Color(50, 205, 50));
+								lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
+								GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+								gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+								gbc_lblNewLabel_3.gridx = 2;
+								gbc_lblNewLabel_3.gridy = 6;
+								panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
 								btnAceptar.setFont(new Font("Tahoma", Font.PLAIN, 16));
 								GridBagConstraints gbc_btnAceptar = new GridBagConstraints();
 								gbc_btnAceptar.anchor = GridBagConstraints.WEST;

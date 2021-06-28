@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import com.itextpdf.text.DocumentException;
@@ -31,7 +32,6 @@ import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,8 +44,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JToolBar;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 
+
+import pulsador.Luz;
 
 public class Principal {
 	private static final int minHeight = 400;
@@ -62,7 +64,6 @@ public class Principal {
 	private JTable tablaPlaylists;
 	private JTable tablaTop10;
 
-	
     private ArrayList<Cancion> listaSeleccion;
     private ArrayList<Cancion> listaSeleccion2;
     private ArrayList<ListaCanciones> listaPlaylists;
@@ -119,6 +120,25 @@ public class Principal {
 		JPanel panel_top = new JPanel();
 		frame.getContentPane().add(panel_top, BorderLayout.NORTH);
 		panel_top.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+		
+		Luz luz = new Luz();
+		luz.setEncendido(false);
+		luz.addEncendidoListener(ev -> {
+			if(luz.isEncendido()) {
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				    "XML files", "xml");
+				chooser.setFileFilter(filter);
+				int returnVal = chooser.showOpenDialog(chooser);
+				if(returnVal == JFileChooser.APPROVE_OPTION) {
+					System.out.println("Cargando canciones de: " +
+							chooser.getSelectedFile());
+					Controlador.getControlador().cargarCanciones(chooser.getSelectedFile().getAbsolutePath());
+				}
+				luz.setEncendido(false);
+			}
+		});
+		panel_top.add(luz);
 		
 		//Obtención dinámica del nombre de usuario a través de controlador
 		JLabel lblHola = new JLabel("Hola " + controlador.getUser().getNombre());
@@ -200,7 +220,7 @@ public class Principal {
     	panel_Explorar_centro.setLayout(gbl_panel_Explorar_centro);
     	
     	txtTitulo = new JTextField();
-    	txtTitulo.setText("Título");
+    	txtTitulo.setToolTipText("Título");
     	GridBagConstraints gbc_txtTitulo = new GridBagConstraints();
     	gbc_txtTitulo.anchor = GridBagConstraints.NORTH;
     	gbc_txtTitulo.insets = new Insets(0, 0, 5, 5);
@@ -211,7 +231,7 @@ public class Principal {
     	txtTitulo.setColumns(10);
     	
     	txtInterprete = new JTextField();
-    	txtInterprete.setText("Intérprete");
+    	txtInterprete.setToolTipText("Intérprete");
     	GridBagConstraints gbc_txtInterprete = new GridBagConstraints();
     	gbc_txtInterprete.anchor = GridBagConstraints.NORTH;
     	gbc_txtInterprete.insets = new Insets(0, 0, 5, 5);
@@ -349,6 +369,7 @@ public class Principal {
         panel_CreacionLista.add(textInterpreteNuevaLista, gbc_textInterpreteNuevaLista);
         textInterpreteNuevaLista.setColumns(10);
         
+        //$$CooooomOOO?
         JComboBox<String> comboBox_1 = new JComboBox<String>();
     	for(String tipoCancion : controlador.getTiposCanciones()) {
     		comboBox_1.addItem(tipoCancion);        //Cargar los tipos de canciones de forma dinámica
@@ -778,13 +799,13 @@ public class Principal {
 		toolBar.add(btnPDF);
 		
 		
+		
 		if(controlador.getUser().isPremium())
 			btnHaztePremium.setEnabled(false);
 		else {
 			btnTop10.setEnabled(false);
 			btnPDF.setEnabled(false);
 		}
-    	
 
 
 	}

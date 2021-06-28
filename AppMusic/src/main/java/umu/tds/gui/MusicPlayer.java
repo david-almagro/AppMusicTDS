@@ -16,7 +16,6 @@ import umu.tds.dominio.Cancion;
 
 import javax.swing.SwingConstants;
 import java.awt.Font;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -47,30 +46,8 @@ public class MusicPlayer extends JPanel {
 		add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		
 		//Botón central play(>)   stop(||) 
 		JButton btnCentral = new JButton("");
-		btnCentral.addMouseListener(new MouseAdapter() {
-			Controlador cont = Controlador.getControlador();
-    		@Override
-			public void mouseClicked(MouseEvent e) {					
-    			if(cont.isMediaPlayerPlaying()) {
-					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
-					cont.pararCancion();
-				}
-				else {
-					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Stop.png"));
-					int selectedRow = table.getSelectedRow();
-
-					//TODO: en un futuro se pedirá "reproducción por id" al controlador
-					// La idea es tener los id escondidos dentro de la tabla.
-					// estas siguientes lineas están mal pero representan funcionalidad por ahora.
-					cont.reproducirCancionPorNombre( (String) table.getValueAt(selectedRow, 0));
-				}
-			}
-		});		
-		btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
-		panel.add(btnCentral);
 		
 		
 		//Botón anterior 
@@ -103,6 +80,30 @@ public class MusicPlayer extends JPanel {
 				}
 			}
 		});
+		
+		
+
+		btnCentral.addMouseListener(new MouseAdapter() {
+			Controlador cont = Controlador.getControlador();
+    		@Override
+			public void mouseClicked(MouseEvent e) {					
+    			if(cont.isMediaPlayerPlaying()) {
+					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
+					cont.pararCancion();
+				}
+				else {
+					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Stop.png"));
+					int selectedRow = table.getSelectedRow();
+
+					//TODO: en un futuro se pedirá "reproducción por id" al controlador
+					// La idea es tener los id escondidos dentro de la tabla.
+					// estas siguientes lineas están mal pero representan funcionalidad por ahora.
+					cont.reproducirCancionPorNombre( (String) table.getValueAt(selectedRow, 0));
+				}
+			}
+		});		
+		btnCentral.setIcon(new ImageIcon("resources\\iconos\\Play.png"));
+		panel.add(btnCentral);
 		btnSiguiente.setIcon(new ImageIcon("resources\\iconos\\Siguiente.png"));
 		panel.add(btnSiguiente);
 		

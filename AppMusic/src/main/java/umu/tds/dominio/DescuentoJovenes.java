@@ -1,10 +1,9 @@
 package umu.tds.dominio;
 
+public class DescuentoJovenes implements Descuento {
+	private final double porcentaje = 0.5;
 
-public class DescuentoLimitado implements Descuento {
-	private final double porcentaje = 0.2;
-	
-	public DescuentoLimitado(){
+	public DescuentoJovenes() {
 
 	}
 

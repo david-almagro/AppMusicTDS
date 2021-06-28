@@ -1,11 +1,13 @@
 package umu.tds.dao;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import beans.Entidad;
 import beans.Propiedad;
+import umu.tds.dominio.FactoriaDescuentos;
 import umu.tds.dominio.Usuario;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
@@ -44,8 +46,13 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		String user = servicioPersistencia.recuperarPropiedadEntidad(entidad, "user");
 		String password = servicioPersistencia.recuperarPropiedadEntidad(entidad, "password");
 		String fechaNacimiento = servicioPersistencia.recuperarPropiedadEntidad(entidad, "fechaNacimiento");
+		String descuento = servicioPersistencia.recuperarPropiedadEntidad(entidad, "descuento");
 		
-		return new Usuario(nombre, apellidos, email, user, password, fechaNacimiento);
+		LocalDate fechaNac = null;
+		if(!fechaNacimiento.equals("d MMM y")) {
+			fechaNac = LocalDate.parse(fechaNacimiento);
+		}
+		return new Usuario(nombre, apellidos, email, user, password, fechaNac, FactoriaDescuentos.getInstancia().crearDescuento(descuento));
 		
 	}
 
@@ -81,7 +88,8 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		propiedades.add(new Propiedad("email", usuario.getEmail()));
 		propiedades.add(new Propiedad("user", usuario.getUser()));
 		propiedades.add(new Propiedad("password", usuario.getPassword()));
-		propiedades.add(new Propiedad("fechaNacimiento", usuario.getFechaNac()));
+		propiedades.add(new Propiedad("fechaNacimiento", usuario.getFechaNac().toString()));
+		propiedades.add(new Propiedad("descuento", usuario.getDescuento().getClass().getName()));
 		
 		//FALTAN PARÁMETROS
 		
