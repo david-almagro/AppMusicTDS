@@ -205,9 +205,5 @@ public class Login {
 				reg.hacerVisible();
 			}
 		});
-		
-		
-		
 	}
-
 }

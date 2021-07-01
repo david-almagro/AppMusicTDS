@@ -36,6 +36,7 @@ import umu.tds.dominio.DescuentoLimitado;
 import umu.tds.dominio.DescuentoJovenes;
 import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
+
 import umu.tds.componente.Canciones;
 import umu.tds.componente.CancionesEvent;
 import umu.tds.componente.CancionesListener;
@@ -148,6 +149,7 @@ public class Controlador implements CancionesListener{
 	
 	public boolean login(String user, String password) {
 		Usuario usuario = CatalogoUsuarios.getUnicaInstancia().getUsuario(user);
+		System.out.println(usuario.getNombre() + "espremium? : " + String.valueOf(usuario.isPremium()));
 		if(usuario == null || !usuario.getPassword().equals(password))
 			return false;
 		
@@ -309,15 +311,12 @@ public class Controlador implements CancionesListener{
 	}
 	
 	public void hacerPremium() {
+		System.out.println("USERERERERERERERE IDDIDIDIDIID " + user.getId());
+		this.factoriaDAO.getUsuarioDAO().hacerPremium(user.getId());
 		user.hacerPremium();
+		System.out.println("haciendo prmeimu");
 	}
 
-	public List<Descuento> getDescuentosAplicables() {
-		LinkedList<Descuento> aplicables = new LinkedList<Descuento>();
-
-		
-		return null;
-	}
 	
 	@Override
 	public void enteradoCargaCancion(CancionesEvent arg0) {

@@ -6,22 +6,20 @@ import java.util.List;
 
 public class Usuario {
 	
+	private int id;
 	private String user;
 	private String password;
-	
 	private String email;
 	private String nombre;
 	private String apellidos;
 	private LocalDate fechaNac;
 	private Descuento descuento;
-	private int id;
-	
-
 
 	private boolean premium;
 	
 	private LinkedList<ListaCanciones> listas;
 	private ListaRecientes recientes;
+
 
 
 	public Usuario(String user, String password, String email, String nombre, String apellidos, LocalDate fechaNac, Descuento descuento) {
@@ -34,8 +32,16 @@ public class Usuario {
 		this.listas = new LinkedList<ListaCanciones>();
 		this.recientes = new ListaRecientes("Recientes");
 		this.descuento = descuento;
+		this.premium = false;
 		id = 0; // se establece al meterlo en el servicio de persistencia;
 	}
+	
+	public Usuario(String user, String password, String email, String nombre, String apellidos, LocalDate fechaNac, Descuento descuento, Boolean premium, int id) {
+		this(user, password, email, nombre, apellidos, fechaNac, descuento);
+		this.premium = premium;
+		this.id = id;
+	}
+	
 
 	public String getUser() {
 		return user;

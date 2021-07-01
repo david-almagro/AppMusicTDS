@@ -9,4 +9,6 @@ public interface IAdaptadorUsuarioDAO{
 	boolean deleteUsuario(Usuario usuario);
 	Usuario getUsuario(int id);
 	List<Usuario> getAllUsuarios();
+	void hacerPremium(int id);
+
 }

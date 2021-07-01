@@ -327,9 +327,7 @@ public class Principal {
         		//listaSeleccion = new ArrayList<Cancion>();
         		listaSeleccion2 = new ArrayList<Cancion>();
 
-        		
-        		
-    			//Vaciamos ambos modelos
+       			//Vaciamos ambos modelos
     			while (modelo.getRowCount() > 0) {
     				modelo.removeRow(0); 
     			}
