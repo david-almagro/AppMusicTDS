@@ -7,8 +7,8 @@ import umu.tds.dominio.Usuario;
 public interface IAdaptadorUsuarioDAO{
 	void createUsuario(Usuario usuario);
 	boolean deleteUsuario(Usuario usuario);
+	void updateUsuario(Usuario usuario);
 	Usuario getUsuario(int id);
 	List<Usuario> getAllUsuarios();
 	void hacerPremium(int id);
-
 }

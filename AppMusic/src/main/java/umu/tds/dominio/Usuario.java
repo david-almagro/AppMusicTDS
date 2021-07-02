@@ -36,8 +36,9 @@ public class Usuario {
 		id = 0; // se establece al meterlo en el servicio de persistencia;
 	}
 	
-	public Usuario(String user, String password, String email, String nombre, String apellidos, LocalDate fechaNac, Descuento descuento, Boolean premium, int id) {
+	public Usuario(String user, String password, String email, String nombre, String apellidos, LocalDate fechaNac, Descuento descuento,LinkedList<ListaCanciones> listas, Boolean premium, int id) {
 		this(user, password, email, nombre, apellidos, fechaNac, descuento);
+		this.listas = listas;
 		this.premium = premium;
 		this.id = id;
 	}

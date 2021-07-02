@@ -17,9 +17,10 @@ public class Cancion {
 		id = 0;  // se establece al meterlo en el servicio de persistencia;
 	}
 	
-	public Cancion(String nombre, String interprete, String estilo, String rutafichero, int numReproducciones) {
+	public Cancion(String nombre, String interprete, String estilo, String rutafichero, int id, int numReproducciones) {
 		this(nombre,interprete,estilo,rutafichero);
 		this.numReproducciones = numReproducciones;
+		this.id = id;
 	}
 
 	public String getNombre() {

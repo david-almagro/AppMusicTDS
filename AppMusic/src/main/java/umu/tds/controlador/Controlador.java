@@ -22,13 +22,10 @@ import java.util.stream.Collectors;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
-import umu.tds.dao.AdaptadorCancionDAO;
-import umu.tds.dao.AdaptadorUsuarioDAO;
 import umu.tds.dao.DAOException;
 import umu.tds.dao.FactoriaDAO;
 import umu.tds.dao.IAdaptadorUsuarioDAO;
 import umu.tds.dominio.Cancion;
-import umu.tds.dominio.CatalogoCanciones;
 import umu.tds.dominio.CatalogoUsuarios;
 import umu.tds.dominio.Descuento;
 import umu.tds.dominio.DescuentoBase;
@@ -46,7 +43,6 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.BaseColor;
@@ -81,10 +77,10 @@ public class Controlador implements CancionesListener{
 	}
 	
 	//No me acuerdo de donde me he sacado esta función
-	private void inicializarAdaptadores() {
+	/*private void inicializarAdaptadores() {
 		AdaptadorUsuarioDAO adaptadorUsuario = new AdaptadorUsuarioDAO();
 		AdaptadorCancionDAO adaptadorCancion = new AdaptadorCancionDAO();
-	}
+	}*/
 
 	public static Controlador getControlador() {
 		if(controlador==null) controlador = new Controlador();
@@ -149,11 +145,9 @@ public class Controlador implements CancionesListener{
 	
 	public boolean login(String user, String password) {
 		Usuario usuario = CatalogoUsuarios.getUnicaInstancia().getUsuario(user);
-		System.out.println(usuario.getNombre() + "espremium? : " + String.valueOf(usuario.isPremium()));
 		if(usuario == null || !usuario.getPassword().equals(password))
 			return false;
-		
-		//
+
 		this.user=usuario; //nos guardamos el usuario que se ha logueado en el controlador
 		return true;
 	}
@@ -243,6 +237,14 @@ public class Controlador implements CancionesListener{
 		File srcCanciones = new File("resources/canciones");
 		File[] carpetasCanciones = srcCanciones.listFiles();
 		cancionesLocales = new LinkedList<Cancion>();
+		try {
+			cancionesLocales = (LinkedList<Cancion>) FactoriaDAO.getInstancia().getCancionDAO().getAllCanciones();
+		} catch (DAOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		
 		
 		for (File f : carpetasCanciones) {
 			File[] cancionesPorEstilo = f.listFiles();
@@ -250,9 +252,21 @@ public class Controlador implements CancionesListener{
 			for (File s : cancionesPorEstilo) {
 				String[] autorTitulo = s.getName().split("-");
 				Cancion cancion = new Cancion(autorTitulo[1], autorTitulo[0], f.getName().toLowerCase(), s.getPath());
-				cancionesLocales.add(cancion);
+				if(cancionesLocales.stream().noneMatch(c -> c.getEstilo().equals(cancion.getEstilo())
+														&& c.getInterprete().equals(cancion.getInterprete())
+														&& c.getNombre().equals(cancion.getNombre()))){
+					cancionesLocales.add(cancion);
+					try {
+						FactoriaDAO.getInstancia().getCancionDAO().createCancion(cancion);
+					} catch (DAOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
+		
+		
 	}
 	
 	public Boolean isMediaPlayerPlaying(){
@@ -287,7 +301,7 @@ public class Controlador implements CancionesListener{
 	}
 	
 	public void exportarPDF() throws FileNotFoundException, DocumentException {
-		String path = "C:\\Users\\malwt\\git\\AppMusicTDS\\Listas.pdf";
+		String path = "resources/misListas.pdf";
 		File f = new File(path);
 		if(f.exists()) f.delete();
 		FileOutputStream file = new FileOutputStream(path);
@@ -311,7 +325,6 @@ public class Controlador implements CancionesListener{
 	}
 	
 	public void hacerPremium() {
-		System.out.println("USERERERERERERERE IDDIDIDIDIID " + user.getId());
 		this.factoriaDAO.getUsuarioDAO().hacerPremium(user.getId());
 		user.hacerPremium();
 		System.out.println("haciendo prmeimu");
@@ -320,7 +333,6 @@ public class Controlador implements CancionesListener{
 	
 	@Override
 	public void enteradoCargaCancion(CancionesEvent arg0) {
-		System.out.println("soy imbecil");
 		Canciones canciones = arg0.getNuevoCanciones();
 		for(umu.tds.componente.Cancion c : canciones.getCancion()) {
 			
@@ -354,9 +366,14 @@ public class Controlador implements CancionesListener{
 		cargarCanciones(rutaCanciones.getAbsolutePath());
 	}
 	
+	public void updateUsuario() {
+		factoriaDAO.getUsuarioDAO().updateUsuario(user);
+	}
+	
 	public void cargarCanciones(String rutaCanciones) {
 		cargaCancionesXML.setArchivoCanciones(rutaCanciones);
 	}
+
 	
 }
 

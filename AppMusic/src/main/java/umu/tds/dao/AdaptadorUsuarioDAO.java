@@ -8,6 +8,7 @@ import java.util.List;
 import beans.Entidad;
 import beans.Propiedad;
 import umu.tds.dominio.FactoriaDescuentos;
+import umu.tds.dominio.ListaCanciones;
 import umu.tds.dominio.Usuario;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
@@ -24,11 +25,6 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		servicioPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 
-
-	//public void create(Usuario usuario) {
-
-		
-	//}
 
 	@Override
 	public boolean deleteUsuario(Usuario usuario) {
@@ -48,28 +44,37 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		String fechaNacimiento = servicioPersistencia.recuperarPropiedadEntidad(entidad, "fechaNacimiento");
 		String descuento = servicioPersistencia.recuperarPropiedadEntidad(entidad, "descuento");
 		String premium = servicioPersistencia.recuperarPropiedadEntidad(entidad, "premium");
+		String listasCanciones = servicioPersistencia.recuperarPropiedadEntidad(entidad, "listaCanciones");
+		
+		System.out.println("Lista del usuario en el dao lol:  " + listasCanciones);
+		LinkedList<ListaCanciones> listaListas = new LinkedList<ListaCanciones>();
+		if(listasCanciones != null) {
+			for(String l : listasCanciones.trim().split(" ")) {
+				try {
+					listaListas.add(umu.tds.dao.FactoriaDAO.getInstancia().getListaCancionesDAO().getListaCanciones(Integer.parseInt(l)));
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		LocalDate fechaNac = null;
 		if(!fechaNacimiento.equals("d MMM y")) {
 			fechaNac = LocalDate.parse(fechaNacimiento);
 		}
-		return new Usuario(nombre, apellidos, email, user, password, fechaNac, FactoriaDescuentos.getInstancia().crearDescuento(descuento), Boolean.parseBoolean(premium), id);
+		return new Usuario(nombre, apellidos, email, user, password, fechaNac, FactoriaDescuentos.getInstancia().crearDescuento(descuento),listaListas, Boolean.parseBoolean(premium), id);
 		
 	}
 
 	@Override
 	public List<Usuario> getAllUsuarios() { //No es necesario devolver LinkedList, con List basta, porque la implementación es indiferente
-		boolean existe = false;
 		
 		LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
 		ArrayList<Entidad> entidades = null;
-		try {
-			entidades = servicioPersistencia.recuperarEntidades("Usuario");
-		} catch (NullPointerException e) {
-			existe = true;
-		}
-		
-		// ?? if(existe || entidades==null) return usuarios;
-		
+
+		entidades = servicioPersistencia.recuperarEntidades("Usuario");
+
+				
 		for(Entidad ent : entidades) {
 			usuarios.add(getUsuario(ent.getId()));
 		}
@@ -81,7 +86,16 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 	@Override
 	public void createUsuario(Usuario usuario) {
 
-		// servicioPersistencia.addPropiedad(ent,"nombre", usuario.getNombre());
+		//Añadimos las listas de canciones antes de añadir el usuario
+		for(ListaCanciones l : usuario.getListas()) {
+			try {
+				FactoriaDAO.getInstancia().getListaCancionesDAO().createListaCancion(l);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		LinkedList<Propiedad> propiedades = new LinkedList<Propiedad>();
 		propiedades.add(new Propiedad("nombre", usuario.getNombre()));
 		propiedades.add(new Propiedad("apellidos", usuario.getApellidos()));
@@ -91,15 +105,20 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		propiedades.add(new Propiedad("fechaNacimiento", usuario.getFechaNac().toString()));
 		propiedades.add(new Propiedad("descuento", usuario.getDescuento().getClass().getName()));
 		propiedades.add(new Propiedad("premium", String.valueOf(usuario.isPremium())));
-		//FALTAN PARÁMETROS
-		System.out.println("createusuario dao premium??? :"  +  String.valueOf(usuario.isPremium()));
-		
+		String listaString = usuario.getListas().stream().map(lc -> String.valueOf(lc.getId())).reduce("", (c1, c2) -> c1.concat(" ".concat(c2)).trim());													
+		propiedades.add(new Propiedad("listaCanciones", listaString));
+		System.out.println("Lista en create usuario lol del dao saes: " + listaString);
 		Entidad entidad = new Entidad();
 		entidad.setNombre("Usuario");
 		entidad.setPropiedades(propiedades);
 		
 		entidad = servicioPersistencia.registrarEntidad(entidad);
 		usuario.setId(entidad.getId());
+	}
+	
+	public void updateUsuario(Usuario usuario) {
+		this.deleteUsuario(usuario);
+		this.createUsuario(usuario);
 	}
 	
 	public void hacerPremium(int id) {

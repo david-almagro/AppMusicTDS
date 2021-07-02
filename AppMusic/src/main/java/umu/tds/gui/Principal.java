@@ -62,12 +62,10 @@ public class Principal {
 	private JTable table;
 	private JTable table_2;
 	private JTable tablaPlaylists;
-	private JTable tablaTop10;
 
     private ArrayList<Cancion> listaSeleccion;
     private ArrayList<Cancion> listaSeleccion2;
     private ArrayList<ListaCanciones> listaPlaylists;
-    private ArrayList<Cancion> listaPlaylistCanciones;
     
 
 	/**
@@ -357,7 +355,7 @@ public class Principal {
         panel_CreacionLista.add(textTituloNuevaLista, gbc_textTituloNuevaLista);
         textTituloNuevaLista.setColumns(10);
          
-        //Título e intérprete estaban al revés
+
         textInterpreteNuevaLista = new JTextField();
         GridBagConstraints gbc_textInterpreteNuevaLista = new GridBagConstraints();
         gbc_textInterpreteNuevaLista.insets = new Insets(0, 0, 5, 5);
@@ -367,7 +365,7 @@ public class Principal {
         panel_CreacionLista.add(textInterpreteNuevaLista, gbc_textInterpreteNuevaLista);
         textInterpreteNuevaLista.setColumns(10);
         
-        //$$CooooomOOO?
+        
         JComboBox<String> comboBox_1 = new JComboBox<String>();
     	for(String tipoCancion : controlador.getTiposCanciones()) {
     		comboBox_1.addItem(tipoCancion);        //Cargar los tipos de canciones de forma dinámica
@@ -530,6 +528,7 @@ public class Principal {
     			}
     			JOptionPane.showMessageDialog(frame, "Lista creada satisfactoriamente", "Lista creada", JOptionPane.INFORMATION_MESSAGE);
     			controlador.crearPlaylist(nombreNuevaLista.getText(),listaSeleccion2);
+    			controlador.updateUsuario();
 				panel_CreacionLista.setVisible(false);
 
     		}
@@ -617,7 +616,7 @@ public class Principal {
         btnCargarPlaylists.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
     			
-    			listaPlaylistCanciones = new ArrayList<Cancion>();
+    			//listaPlaylistCanciones = new ArrayList<Cancion>();
 
     			JOptionPane.showMessageDialog(frame, "Lista cargada", "Error, nombre de lista no válido", JOptionPane.INFORMATION_MESSAGE);
     			
@@ -716,6 +715,10 @@ public class Principal {
 
     	
 		JButton btnMisListas = new JButton("Mis listas");
+		btnMisListas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnMisListas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

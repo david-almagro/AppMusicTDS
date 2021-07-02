@@ -31,7 +31,7 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		propiedades.add(new Propiedad("rutaFichero", cancion.getRutaFichero()));
 		// TODO: numReproducciones??
 		propiedades.add(new Propiedad("numReproducciones", String.valueOf(cancion.getNumReproducciones())));
-				
+		System.out.println("AdaptadorCancion::createCancion(int id) -> " + String.valueOf(cancion.getNumReproducciones()));
 		Entidad entidad = new Entidad();
 		entidad.setNombre("cancion");
 		entidad.setPropiedades(propiedades);
@@ -56,14 +56,22 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		String interprete = servicioPersistencia.recuperarPropiedadEntidad(entidad, "interprete");
 		String estilo = servicioPersistencia.recuperarPropiedadEntidad(entidad, "estilo");
 		String rutaFichero = servicioPersistencia.recuperarPropiedadEntidad(entidad, "rutaFichero");
-		int numReproducciones = Integer.parseInt(servicioPersistencia.recuperarPropiedadEntidad(entidad, "numReproducciones"));
 		
-		return new Cancion(nombre, interprete, estilo, rutaFichero, numReproducciones);
+		String numRepro = servicioPersistencia.recuperarPropiedadEntidad(entidad, "numReproducciones");
+		
+		System.out.println("AdaptadorCancion::getCancion(int id) -> id{" + id +"}" + nombre + "/"+ interprete +"/"+ estilo + "/"+ rutaFichero+"/");
+		
+		int numReproducciones = 0 ;
+		if (numRepro != null) {
+			numReproducciones = Integer.parseInt(numRepro);
+		}
+		
+		return new Cancion(nombre, interprete, estilo, rutaFichero, id, numReproducciones);
 		
 	}
 
 	@Override
-	public List<Cancion> getAllCanciones() { //No es necesario devolver LinkedList, con List basta, porque la implementación es indiferente
+	public List<Cancion> getAllCanciones() {
 		LinkedList<Cancion> cancions = new LinkedList<Cancion>();
 		ArrayList<Entidad> entidades = servicioPersistencia.recuperarEntidades("cancion");
 		

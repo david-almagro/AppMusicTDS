@@ -11,6 +11,7 @@ public abstract class FactoriaDAO {
 	private static FactoriaDAO unicaInstancia = null;
 	
 
+	@SuppressWarnings("deprecation")
 	public static FactoriaDAO getInstancia(String tipo) throws DAOException{
 		if (unicaInstancia == null)
 			try { 
@@ -30,7 +31,7 @@ public abstract class FactoriaDAO {
 
 	public abstract IAdaptadorCancionDAO getCancionDAO();
 	public abstract IAdaptadorUsuarioDAO getUsuarioDAO();
-	//public abstract IAdaptadorListaCancionesDAO getListaCanciones();
+	public abstract IAdaptadorListaCancionesDAO getListaCancionesDAO();
 
 	
 }

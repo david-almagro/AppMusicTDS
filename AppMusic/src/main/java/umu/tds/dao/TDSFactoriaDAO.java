@@ -16,10 +16,13 @@ public class TDSFactoriaDAO extends FactoriaDAO {
 		return new AdaptadorUsuarioDAO();
 		//es abstracta ?
 	}
-	
-	//@Override
-	//public IAdaptadorListaCancionesDAO getListaCancionesDAO() {
-	//	return new AdaptadorListaCancionesDAO();
-	//}
+
+	@Override
+	public IAdaptadorListaCancionesDAO getListaCancionesDAO() {
+		// TODO Auto-generated method stub
+		return new AdaptadorListaCancionesDAO();
+	}
+
+
 
 }
