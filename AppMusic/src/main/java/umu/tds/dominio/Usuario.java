@@ -88,6 +88,16 @@ public class Usuario {
 		return nombre;
 	}
 
+	public boolean removeListaCancion(String nombre) {
+		for(ListaCanciones lc : listas) {
+			if(lc.getNombre().equals(nombre)) {
+				listas.remove(lc);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}

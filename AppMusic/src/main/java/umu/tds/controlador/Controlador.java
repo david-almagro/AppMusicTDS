@@ -19,6 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.h2.engine.UserAggregate;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -103,6 +105,7 @@ public class Controlador implements CancionesListener{
 		return user.getRecientes();
 	}
 	
+
 	
 	public boolean existeUsuario(String usuario) {
 		return CatalogoUsuarios.getUnicaInstancia().getUsuario(usuario) != null;
@@ -285,8 +288,23 @@ public class Controlador implements CancionesListener{
 		return tiposCancion;
 	}
 	
-	public boolean crearPlaylist(String nombre, List<Cancion> canciones) {
-		return user.crearPlaylist(nombre, canciones);	
+	public boolean crearListaCanciones(String nombre, List<Cancion> canciones) {
+		if(user.getListas().stream().anyMatch(lc -> lc.getNombre().equals(nombre))) {
+			user.removeListaCancion(nombre);
+		}
+		if(user.crearPlaylist(nombre, canciones)) {
+			this.updateUsuario();
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean borrarListaCanciones(String nombre){
+		if(user.removeListaCancion(nombre)) {
+			this.updateUsuario();
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean usuarioPremium() {
@@ -365,6 +383,16 @@ public class Controlador implements CancionesListener{
 	public void cargarCanciones(File rutaCanciones) {
 		cargarCanciones(rutaCanciones.getAbsolutePath());
 	}
+	
+	public ListaCanciones getListaCanciones(String nombre) {
+		for(ListaCanciones lc : this.user.getListas()) {
+			if(lc.getNombre().equals(nombre))
+				return lc;
+		}
+		return null;
+	}
+	
+
 	
 	public void updateUsuario() {
 		factoriaDAO.getUsuarioDAO().updateUsuario(user);

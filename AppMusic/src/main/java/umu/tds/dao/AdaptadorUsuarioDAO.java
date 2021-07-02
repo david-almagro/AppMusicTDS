@@ -46,12 +46,13 @@ public final class AdaptadorUsuarioDAO implements IAdaptadorUsuarioDAO {
 		String premium = servicioPersistencia.recuperarPropiedadEntidad(entidad, "premium");
 		String listasCanciones = servicioPersistencia.recuperarPropiedadEntidad(entidad, "listaCanciones");
 		
-		System.out.println("Lista del usuario en el dao lol:  " + listasCanciones);
 		LinkedList<ListaCanciones> listaListas = new LinkedList<ListaCanciones>();
 		if(listasCanciones != null) {
 			for(String l : listasCanciones.trim().split(" ")) {
 				try {
-					listaListas.add(umu.tds.dao.FactoriaDAO.getInstancia().getListaCancionesDAO().getListaCanciones(Integer.parseInt(l)));
+					if(!l.equals("")) {
+						listaListas.add(umu.tds.dao.FactoriaDAO.getInstancia().getListaCancionesDAO().getListaCanciones(Integer.parseInt(l)));
+					}
 				} catch (DAOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

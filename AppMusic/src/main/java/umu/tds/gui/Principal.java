@@ -60,7 +60,7 @@ public class Principal {
 	private JTextField textInterpreteNuevaLista;
 	private JTextField textTituloNuevaLista;
 	private JTable table;
-	private JTable table_2;
+	private JTable miLista;
 	private JTable tablaPlaylists;
 
     private ArrayList<Cancion> listaSeleccion;
@@ -96,6 +96,9 @@ public class Principal {
 		frame.setVisible(true);
 	}
 	
+	
+  
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -113,13 +116,25 @@ public class Principal {
 		frame.setBounds(100, 100, minWidth, minHeight);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-        frame.setMinimumSize(new Dimension(minWidth, minHeight));
+        frame.setMinimumSize(new Dimension(700, 400));
 
 		JPanel panel_top = new JPanel();
 		frame.getContentPane().add(panel_top, BorderLayout.NORTH);
 		panel_top.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		
+		//Obtención dinámica del nombre de usuario a través de controlador
+		JLabel lblHola = new JLabel("Hola " + controlador.getUser().getNombre());
+		
+		panel_top.add(lblHola);
+		lblHola.setVerticalAlignment(SwingConstants.BOTTOM);
+		lblHola.setHorizontalAlignment(SwingConstants.CENTER);
+		lblHola.setAlignmentX(1.0f);
+		
+		JLabel lblNewLabel = new JLabel("Carga tus canciones ->");
+		panel_top.add(lblNewLabel);
+		
 		Luz luz = new Luz();
+		panel_top.add(luz);
 		luz.setEncendido(false);
 		luz.addEncendidoListener(ev -> {
 			if(luz.isEncendido()) {
@@ -136,15 +151,6 @@ public class Principal {
 				luz.setEncendido(false);
 			}
 		});
-		panel_top.add(luz);
-		
-		//Obtención dinámica del nombre de usuario a través de controlador
-		JLabel lblHola = new JLabel("Hola " + controlador.getUser().getNombre());
-		
-		panel_top.add(lblHola);
-		lblHola.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblHola.setHorizontalAlignment(SwingConstants.CENTER);
-		lblHola.setAlignmentX(1.0f);
 		
 
 		JButton btnHaztePremium = new JButton("Hazte premium");
@@ -218,6 +224,7 @@ public class Principal {
     	panel_Explorar_centro.setLayout(gbl_panel_Explorar_centro);
     	
     	txtTitulo = new JTextField();
+    	txtTitulo.setText("Título");
     	txtTitulo.setToolTipText("Título");
     	GridBagConstraints gbc_txtTitulo = new GridBagConstraints();
     	gbc_txtTitulo.anchor = GridBagConstraints.NORTH;
@@ -229,6 +236,7 @@ public class Principal {
     	txtTitulo.setColumns(10);
     	
     	txtInterprete = new JTextField();
+    	txtInterprete.setText("Intérprete");
     	txtInterprete.setToolTipText("Intérprete");
     	GridBagConstraints gbc_txtInterprete = new GridBagConstraints();
     	gbc_txtInterprete.anchor = GridBagConstraints.NORTH;
@@ -318,6 +326,31 @@ public class Principal {
         panel_CreacionLista.setLayout(gbl_panel_CreacionLista);
 		panel_CreacionLista.setVisible(false);
 
+		//Tabla 1
+        JScrollPane scrollPane_1 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
+        gbc_scrollPane_1.gridwidth = 2;
+        gbc_scrollPane_1.gridheight = 5;
+        gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_1.gridx = 1;
+        gbc_scrollPane_1.gridy = 2;
+        panel_CreacionLista.add(scrollPane_1, gbc_scrollPane_1); 		
+		
+        //Tabla 2
+        JScrollPane scrollPane_2 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
+        gbc_scrollPane_2.gridwidth = 2;
+        gbc_scrollPane_2.gridheight = 5;
+        gbc_scrollPane_2.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane_2.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_2.gridx = 4;
+        gbc_scrollPane_2.gridy = 2;
+        panel_CreacionLista.add(scrollPane_2, gbc_scrollPane_2);
+		
+        
+        miLista = new JTable(modelo2);
+
         CrearLista.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		
@@ -335,7 +368,28 @@ public class Principal {
         		
         		String nuevalistaNombre = nombreNuevaLista.getText();
         		if (controlador.existeLista(nombreNuevaLista.getText())) {
-        			JOptionPane.showMessageDialog(frame, "Ya existe una lista con ese nombre", "Error, nombre de lista no válido", JOptionPane.ERROR_MESSAGE);
+					int creacionLista = JOptionPane.showConfirmDialog(frame,"La lista \"" + nuevalistaNombre +"\" ya existe\n¿Desea modificarla?" ,"Modificar lista", JOptionPane.YES_NO_CANCEL_OPTION);
+					if(creacionLista == JOptionPane.OK_OPTION) {
+						
+						panel_CreacionLista.setVisible(true);
+		    			//Vaciamos el primero modelo y su lista
+		    			while (modelo.getRowCount() > 0) {
+		    				modelo.removeRow(0);
+		    			}
+		    	        listaSeleccion = new ArrayList<Cancion>();
+		    	        
+		    			List<Cancion> listaAntigua = controlador.getListaCanciones(nuevalistaNombre).getCanciones();
+		    	        for(Cancion c : listaAntigua) {
+		    	        	Vector<String> v = new Vector<String>();
+		    	        	v.add(c.getNombre());
+		    	        	v.add(c.getInterprete());
+		    	            modelo2.addRow(v);
+		    	            listaSeleccion2.add(c);
+		    	        }
+		    	        miLista.updateUI();
+		    	        scrollPane_1.setViewportView(table);
+		    		
+					}
         		}
         		else {
 					int creacionLista = JOptionPane.showConfirmDialog(frame,"¿Crear la lista \"" + nuevalistaNombre +"\"?" ,"Nueva lista", JOptionPane.YES_NO_CANCEL_OPTION);
@@ -345,6 +399,7 @@ public class Principal {
         		}
         	}
         });
+
         
         textTituloNuevaLista = new JTextField();
         GridBagConstraints gbc_textTituloNuevaLista = new GridBagConstraints();
@@ -368,7 +423,7 @@ public class Principal {
         
         JComboBox<String> comboBox_1 = new JComboBox<String>();
     	for(String tipoCancion : controlador.getTiposCanciones()) {
-    		comboBox_1.addItem(tipoCancion);        //Cargar los tipos de canciones de forma dinámica
+    		comboBox_1.addItem(tipoCancion);        
     	}        
        
         GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
@@ -386,17 +441,6 @@ public class Principal {
         gbc_BuscarNuevaLista.gridy = 1;
         panel_CreacionLista.add(BuscarNuevaLista, gbc_BuscarNuevaLista);
 
-        
-        JScrollPane scrollPane_1 = new JScrollPane();
-        GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-        gbc_scrollPane_1.gridwidth = 2;
-        gbc_scrollPane_1.gridheight = 5;
-        gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
-        gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
-        gbc_scrollPane_1.gridx = 1;
-        gbc_scrollPane_1.gridy = 2;
-        panel_CreacionLista.add(scrollPane_1, gbc_scrollPane_1); 
-
 
         table = new JTable(modelo);
         scrollPane_1.setViewportView(table);
@@ -413,8 +457,6 @@ public class Principal {
     			}
     	        listaSeleccion = new ArrayList<Cancion>();
     	        
-    	        //listaSeleccion2 = new ArrayList<Cancion>(); 
-    			//comboBox_TipoCanciones.getSelectedItem(); 
     			String titulo = textTituloNuevaLista.getText();
     			String interprete = textInterpreteNuevaLista.getText();
     			String estilo = comboBox_1.getSelectedItem().toString().toLowerCase();
@@ -425,35 +467,22 @@ public class Principal {
     	        	v.add(c.getInterprete());
     	            modelo.addRow(v);
     	            listaSeleccion.add(c);
-    	            //de esta forma tendrán el mismo orden y con el mismo índice
-
     	        }
     	        table = new JTable(modelo);
-    	        
     	        scrollPane_1.setViewportView(table);
-
     		}
     	});
         
         scrollPane_1.setViewportView(table);
         
-        JScrollPane scrollPane_2 = new JScrollPane();
-        GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
-        gbc_scrollPane_2.gridwidth = 2;
-        gbc_scrollPane_2.gridheight = 5;
-        gbc_scrollPane_2.insets = new Insets(0, 0, 5, 5);
-        gbc_scrollPane_2.fill = GridBagConstraints.BOTH;
-        gbc_scrollPane_2.gridx = 4;
-        gbc_scrollPane_2.gridy = 2;
-        panel_CreacionLista.add(scrollPane_2, gbc_scrollPane_2);
+
         
         //Creamos el model con las columnas y lo metemos en la tabla, posteriormente se añadirán con los >> y <<
        // DefaultTableModel model2 = new DefaultTableModel();
         //model2.addColumn("Título");
         //model2.addColumn("Intérprete");
-        table_2 = new JTable(modelo2);
 
-        scrollPane_2.setViewportView(table_2);
+        scrollPane_2.setViewportView(miLista);
         
         JButton btnleftleft = new JButton("<<");
         GridBagConstraints gbc_btnleftleft = new GridBagConstraints();
@@ -464,10 +493,10 @@ public class Principal {
         btnleftleft.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
     			
-    			int row = table_2.getSelectedRow();
+    			int row = miLista.getSelectedRow();
     			if(row>-1) {
-    			String title = (String) table_2.getValueAt(row,0);
-    			String interp = (String) table_2.getValueAt(row,1);
+    			String title = (String) miLista.getValueAt(row,0);
+    			String interp = (String) miLista.getValueAt(row,1);
 	        	Vector<String> v = new Vector<String>();
 	        	v.add(title);
 	        	v.add(interp);
@@ -479,7 +508,6 @@ public class Principal {
 	            listaSeleccion.add(listaSeleccion2.get(row)); //addLast el que cogemos de la posición "row"
 	            listaSeleccion2.remove(row);
     			}
-
     		}
     	});
         
@@ -526,9 +554,15 @@ public class Principal {
     			System.out.printf(c.getInterprete());
     			System.out.printf("\n");
     			}
-    			JOptionPane.showMessageDialog(frame, "Lista creada satisfactoriamente", "Lista creada", JOptionPane.INFORMATION_MESSAGE);
-    			controlador.crearPlaylist(nombreNuevaLista.getText(),listaSeleccion2);
+    			if(controlador.existeLista(nombreNuevaLista.getText())) {
+        			JOptionPane.showMessageDialog(frame, "Lista modificada satisfactoriamente", "Lista modificada", JOptionPane.INFORMATION_MESSAGE);
+
+    			}else {
+        			JOptionPane.showMessageDialog(frame, "Lista creada satisfactoriamente", "Lista creada", JOptionPane.INFORMATION_MESSAGE);
+    			}
+    			controlador.crearListaCanciones(nombreNuevaLista.getText(),listaSeleccion2);
     			controlador.updateUsuario();
+    			
 				panel_CreacionLista.setVisible(false);
 
     		}
@@ -596,23 +630,37 @@ public class Principal {
         gbc_musicPlayer_listas.gridx = 4;
         gbc_musicPlayer_listas.gridy = 2;
         panel_Listas.add(musicPlayer_listas, gbc_musicPlayer_listas);
-
         
-		/*
-		 * GridBagConstraints gbc_musicPlayer_listas = new GridBagConstraints();
-		 * gbc_musicPlayer_listas.gridwidth = 2; gbc_musicPlayer_listas.gridheight = 5;
-		 * gbc_musicPlayer_listas.insets = new Insets(0, 0, 5, 5);
-		 * gbc_musicPlayer_listas.fill = GridBagConstraints.BOTH;
-		 * gbc_musicPlayer_listas.gridx = 4; gbc_musicPlayer_listas.gridy = 2;
-		 * panel_CreacionLista.add(musicPlayer_listas, gbc_musicPlayer_listas);
-		 */
-        
-        JButton btnCargarPlaylists = new JButton("Cargar");
-        GridBagConstraints gbc_btnCargarPlaylists = new GridBagConstraints();
-        gbc_btnCargarPlaylists.insets = new Insets(0, 0, 0, 5);
-        gbc_btnCargarPlaylists.gridx = 2;
-        gbc_btnCargarPlaylists.gridy = 7;
-        panel_Listas.add(btnCargarPlaylists, gbc_btnCargarPlaylists);
+                
+        		
+                JButton btnCargarPlaylists = new JButton("Cargar");
+                GridBagConstraints gbc_btnCargarPlaylists = new GridBagConstraints();
+                gbc_btnCargarPlaylists.insets = new Insets(0, 0, 0, 5);
+                gbc_btnCargarPlaylists.gridx = 1;
+                gbc_btnCargarPlaylists.gridy = 7;
+                panel_Listas.add(btnCargarPlaylists, gbc_btnCargarPlaylists);
+                
+                JButton btnBorrarPlaylist = new JButton("Borrar");
+                btnBorrarPlaylist.addActionListener(new ActionListener() {
+                	public void actionPerformed(ActionEvent e) {
+            			
+            			int row = tablaPlaylists.getSelectedRow();
+            			if(row>-1) {
+        	    			ListaCanciones lista = listaPlaylists.get(row);
+        					int eliminacionLista = JOptionPane.showConfirmDialog(frame,"¿Borrar la lista \"" + lista.getNombre() +"\"?" ,"Borrar Lista", JOptionPane.YES_NO_CANCEL_OPTION);
+        					if(eliminacionLista == JOptionPane.OK_OPTION) {
+        						modeloLista.removeRow(row);
+        						Controlador.getControlador().borrarListaCanciones(lista.getNombre());
+        					}
+            			}
+            		}
+                });
+                
+                GridBagConstraints gbc_btnBorrarPlaylist = new GridBagConstraints();
+                gbc_btnBorrarPlaylist.insets = new Insets(0, 0, 0, 5);
+                gbc_btnBorrarPlaylist.gridx = 2;
+                gbc_btnBorrarPlaylist.gridy = 7;
+                panel_Listas.add(btnBorrarPlaylist, gbc_btnBorrarPlaylist);
         btnCargarPlaylists.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
     			
@@ -620,18 +668,11 @@ public class Principal {
 
     			JOptionPane.showMessageDialog(frame, "Lista cargada", "Error, nombre de lista no válido", JOptionPane.INFORMATION_MESSAGE);
     			
-    			
     			int row = tablaPlaylists.getSelectedRow();
-    			System.out.printf("Playlist numero %d\n",row);
     			if(row>-1) {
-    			ListaCanciones lista = listaPlaylists.get(row);
-    			musicPlayer_listas.setCanciones(lista.getCanciones());    			
+	    			ListaCanciones lista = listaPlaylists.get(row);
+	    			musicPlayer_listas.setCanciones(lista.getCanciones());    			
     			}
-    			
-    			//tablaCanciones = new JTable(modeloLista2);
-    	        
-    	        //scrollPaneListas2.setViewportView(tablaCanciones);
-
 
     		}
     	});
@@ -642,7 +683,6 @@ public class Principal {
         
         
         //TOP10
-    	
     	JPanel panel_Top10 = new JPanel();
     	panelCentral.add(panel_Top10, "card_Top10");
     	panel_Top10.setVisible(false);
@@ -807,7 +847,6 @@ public class Principal {
 			btnTop10.setEnabled(false);
 			btnPDF.setEnabled(false);
 		}
-
 
 	}
 }

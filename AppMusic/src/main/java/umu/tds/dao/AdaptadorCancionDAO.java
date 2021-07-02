@@ -59,7 +59,7 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		
 		String numRepro = servicioPersistencia.recuperarPropiedadEntidad(entidad, "numReproducciones");
 		
-		System.out.println("AdaptadorCancion::getCancion(int id) -> id{" + id +"}" + nombre + "/"+ interprete +"/"+ estilo + "/"+ rutaFichero+"/");
+		//System.out.println("AdaptadorCancion::getCancion(int id) -> id{" + id +"}" + nombre + "/"+ interprete +"/"+ estilo + "/"+ rutaFichero+"/");
 		
 		int numReproducciones = 0 ;
 		if (numRepro != null) {
@@ -81,6 +81,4 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		
 		return cancions;
 	}
-
-	
 }
