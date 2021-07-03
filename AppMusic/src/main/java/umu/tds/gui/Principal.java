@@ -56,6 +56,7 @@ public class Principal {
 	private JFrame frame;
 	private JTextField txtTitulo;
 	private JTextField txtInterprete;
+	private String estilo;
 	private JTextField nombreNuevaLista;
 	private JTextField textInterpreteNuevaLista;
 	private JTextField textTituloNuevaLista;
@@ -66,7 +67,7 @@ public class Principal {
     private ArrayList<Cancion> listaSeleccion;
     private ArrayList<Cancion> listaSeleccion2;
     private ArrayList<ListaCanciones> listaPlaylists;
-    
+    private Controlador controlador;
 
     
 
@@ -98,16 +99,20 @@ public class Principal {
 		frame.setVisible(true);
 	}
 	
-	
-  
+	private void updateTipoCancion(JComboBox<String> comboBox_TipoCanciones) {
+    	comboBox_TipoCanciones.removeAllItems();
+		comboBox_TipoCanciones.addItem("Estilo");
+    	for(String tipoCancion : controlador.getTiposCanciones()) {
+    		comboBox_TipoCanciones.addItem(tipoCancion);
+    	}
+	}
 	
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		//obtención del controlador
-		Controlador controlador = Controlador.getControlador(); 
-		
+		controlador = Controlador.getControlador(); 
+
 		try {
 			controlador.inicializarCancionesLocales();
 		} catch (IOException e1) {
@@ -124,7 +129,6 @@ public class Principal {
 		frame.getContentPane().add(panel_top, BorderLayout.NORTH);
 		panel_top.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		
-		//Obtención dinámica del nombre de usuario a través de controlador
 		JLabel lblHola = new JLabel("Hola " + controlador.getUser().getNombre());
 		
 		panel_top.add(lblHola);
@@ -134,6 +138,10 @@ public class Principal {
 		
 		JLabel lblNewLabel = new JLabel("Carga tus canciones ->");
 		panel_top.add(lblNewLabel);
+		
+    	JComboBox<String> comboBox_TipoCanciones = new JComboBox<String>();
+    	this.updateTipoCancion(comboBox_TipoCanciones);
+
 		
 		Luz luz = new Luz();
 		panel_top.add(luz);
@@ -149,6 +157,7 @@ public class Principal {
 					System.out.println("Cargando canciones de: " +
 							chooser.getSelectedFile());
 					Controlador.getControlador().cargarCanciones(chooser.getSelectedFile().getAbsolutePath());
+			    	this.updateTipoCancion(comboBox_TipoCanciones);
 				}
 				luz.setEncendido(false);
 			}
@@ -249,11 +258,7 @@ public class Principal {
     	txtInterprete.setColumns(10);
     	
     	
-    	JComboBox<String> comboBox_TipoCanciones = new JComboBox<String>();
-    	comboBox_TipoCanciones.addItem("");
-    	for(String tipoCancion : controlador.getTiposCanciones()) {
-    		comboBox_TipoCanciones.addItem(tipoCancion);
-    	}
+
     	
     	GridBagConstraints gbc_comboBox_TipoCanciones = new GridBagConstraints();
     	gbc_comboBox_TipoCanciones.anchor = GridBagConstraints.NORTH;
@@ -301,14 +306,12 @@ public class Principal {
     	//TODO: boton buscar
       	btnBuscar.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
-    			//Estilo musical 			
+    			String estilo = comboBox_TipoCanciones.getSelectedItem().toString();
     			String buscaTitulo = txtTitulo.getText().equals("Título") ? "" : txtTitulo.getText();
     			String buscaInterprete = txtInterprete.getText().equals("Intérprete") ? "" : txtInterprete.getText();
-
+    			String buscaEstilo = estilo.equals("Estilo") ? "" : estilo;
     			musicPlayer_Explorar.setCanciones(
-    					controlador.busqueda(buscaTitulo,
-    										buscaInterprete,
-									    	comboBox_TipoCanciones.getSelectedItem().toString()));
+    					controlador.busqueda(buscaTitulo, buscaInterprete, buscaEstilo));
     		}
     	});
     	

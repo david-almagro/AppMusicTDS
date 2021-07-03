@@ -67,7 +67,7 @@ public class Controlador implements CancionesListener{
 	private String tempPath = "temp";
 
 	private CargadorCanciones cargaCancionesXML = new CargadorCanciones();
-	
+		
 	private Controlador() {
 		//necesitamos tener el factoria para registrar y eso
 		try {
@@ -435,6 +435,11 @@ public class Controlador implements CancionesListener{
 	
 	public void cargarCanciones(String rutaCanciones) {
 		cargaCancionesXML.setArchivoCanciones(rutaCanciones);
+		try {
+			this.inicializarCancionesLocales();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	
