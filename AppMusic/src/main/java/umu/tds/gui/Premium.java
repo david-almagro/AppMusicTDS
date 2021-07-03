@@ -36,7 +36,6 @@ public class Premium {
 	private JPasswordField passwordField;
 	private JButton btnAceptar;
 	private JButton btnCancelar;
-	private JButton btnRegistrar;
 	private JLabel lblPrecio;
 	private JLabel lblDescuento;
 	private JLabel lblNewLabel_2;
@@ -163,23 +162,6 @@ public class Premium {
 		gbc_lblNewLabel_6.gridy = 4;
 		panel_1.add(lblNewLabel_6, gbc_lblNewLabel_6);
 		
-		btnRegistrar = new JButton("Aplicar descuento");
-		btnRegistrar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnRegistrar.setForeground(new Color(30, 144, 255));
-		GridBagConstraints gbc_btnRegistrar = new GridBagConstraints();
-		gbc_btnRegistrar.anchor = GridBagConstraints.WEST;
-		gbc_btnRegistrar.insets = new Insets(0, 0, 5, 5);
-		gbc_btnRegistrar.gridx = 3;
-		gbc_btnRegistrar.gridy = 4;
-		panel_1.add(btnRegistrar, gbc_btnRegistrar);
-		btnRegistrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ev) {
-				frmCompraAppmusicPremium.dispose();
-				Register reg = new Register();
-				reg.hacerVisible();
-			}
-		});
-		
 		lblDescuento = new JLabel("Descuento:");
 		lblDescuento.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblDescuento = new GridBagConstraints();
@@ -196,6 +178,7 @@ public class Premium {
 		gbc_lblNewLabel_5.gridx = 2;
 		gbc_lblNewLabel_5.gridy = 5;
 		panel_1.add(lblNewLabel_5, gbc_lblNewLabel_5);
+		
 		
 		lblNewLabel_2 = new JLabel("Precio final:");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);

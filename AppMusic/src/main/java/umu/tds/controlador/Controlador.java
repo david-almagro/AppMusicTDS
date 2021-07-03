@@ -206,20 +206,21 @@ public class Controlador implements CancionesListener{
 	
 	
 	public void reproducirCancionPorId(int cancionId) { 
-		//Esto esta mal si o también
 		for(Cancion s : cancionesLocales) {
-			if (s.getId().equals(cancionId))
+			if (s.getId().equals(cancionId)) {
 				reproducirCancion(s);
+				return;
+			}
 		}
 	}
 	
 	
 	public void reproducirCancionPorNombre(String tituloCancion) { 
-		//Esto esta mal si o también
-		System.out.println("SysoutControlador.java -> intentando reproducir canción: " + tituloCancion);
 		for(Cancion s : cancionesLocales) {
-			if (s.getNombre().equals(tituloCancion))
+			if (s.getNombre().equals(tituloCancion)) {
 				reproducirCancion(s);
+				return;
+			}
 		}
 	}
 	
@@ -236,25 +237,47 @@ public class Controlador implements CancionesListener{
 	
 	public void inicializarCancionesLocales() throws IOException {
 		tiposCancion = new LinkedList<String>();
-
+		
+		//Fichero de canciones a cargar
 		File srcCanciones = new File("resources/canciones");
 		File[] carpetasCanciones = srcCanciones.listFiles();
 		cancionesLocales = new LinkedList<Cancion>();
+		
+		//Inicialización de canciones en la base de datos
 		try {
 			cancionesLocales = (LinkedList<Cancion>) FactoriaDAO.getInstancia().getCancionDAO().getAllCanciones();
 		} catch (DAOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		LinkedList<Cancion> cancionesEnRuta = new LinkedList<Cancion>();
 
+		//Comprobar si la canción se encuentra en el path, sino, borrar.
+		for(Cancion c : cancionesLocales) {
+			File fileCancion = new File(c.getRutaFichero());
+			if(!fileCancion.exists()) {
+				
+				try {
+					FactoriaDAO.getInstancia().getCancionDAO().createCancion(c);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				cancionesEnRuta.add(c);
+			}
+		}
+		cancionesLocales = cancionesEnRuta;
 		
 		
+		//Buscamos canciones nuevas que existan en el fichero pero no en la BD
 		for (File f : carpetasCanciones) {
 			File[] cancionesPorEstilo = f.listFiles();
 			tiposCancion.add(f.getName());
 			for (File s : cancionesPorEstilo) {
 				String[] autorTitulo = s.getName().split("-");
 				Cancion cancion = new Cancion(autorTitulo[1], autorTitulo[0], f.getName().toLowerCase(), s.getPath());
+				//Si la canción no existe ya, la intentamos meter en la BD
 				if(cancionesLocales.stream().noneMatch(c -> c.getEstilo().equals(cancion.getEstilo())
 														&& c.getInterprete().equals(cancion.getInterprete())
 														&& c.getNombre().equals(cancion.getNombre()))){
@@ -268,8 +291,6 @@ public class Controlador implements CancionesListener{
 				}
 			}
 		}
-		
-		
 	}
 	
 	public Boolean isMediaPlayerPlaying(){

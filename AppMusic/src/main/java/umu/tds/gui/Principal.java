@@ -164,7 +164,6 @@ public class Principal {
 				premium.hacerVisible();
     		}
     	});
-    	
 		
 		
 		//Añadida funcionalidad logout
@@ -249,6 +248,7 @@ public class Principal {
     	
     	
     	JComboBox<String> comboBox_TipoCanciones = new JComboBox<String>();
+    	comboBox_TipoCanciones.addItem("");
     	for(String tipoCancion : controlador.getTiposCanciones()) {
     		comboBox_TipoCanciones.addItem(tipoCancion);
     	}
