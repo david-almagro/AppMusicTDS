@@ -58,14 +58,12 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		String rutaFichero = servicioPersistencia.recuperarPropiedadEntidad(entidad, "rutaFichero");
 		
 		String numRepro = servicioPersistencia.recuperarPropiedadEntidad(entidad, "numReproducciones");
-		
-		//System.out.println("AdaptadorCancion::getCancion(int id) -> id{" + id +"}" + nombre + "/"+ interprete +"/"+ estilo + "/"+ rutaFichero+"/");
-		
+				
 		int numReproducciones = 0 ;
 		if (numRepro != null) {
 			numReproducciones = Integer.parseInt(numRepro);
 		}
-		if(id==0)
+		if(id==0 || nombre == null || interprete == null || estilo == null || rutaFichero == null)
 			return null;
 		return new Cancion(nombre, interprete, estilo, rutaFichero, id, numReproducciones);
 	}

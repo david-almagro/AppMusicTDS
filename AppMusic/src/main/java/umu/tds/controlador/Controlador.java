@@ -250,25 +250,8 @@ public class Controlador implements CancionesListener{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		LinkedList<Cancion> cancionesEnRuta = new LinkedList<Cancion>();
 
-		//Comprobar si la canción se encuentra en el path, sino, borrar.
-		for(Cancion c : cancionesLocales) {
-			File fileCancion = new File(c.getRutaFichero());
-			if(!fileCancion.exists()) {
-				
-				try {
-					FactoriaDAO.getInstancia().getCancionDAO().createCancion(c);
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else {
-				cancionesEnRuta.add(c);
-			}
-		}
-		cancionesLocales = cancionesEnRuta;
-		
+		cancionesLocales = (LinkedList<Cancion>) this.checkIntegridadCanciones(cancionesLocales);
 		
 		//Buscamos canciones nuevas que existan en el fichero pero no en la BD
 		for (File f : carpetasCanciones) {
@@ -291,6 +274,37 @@ public class Controlador implements CancionesListener{
 				}
 			}
 		}
+	}
+	
+	public ListaCanciones checkIntegridadListaCanciones(ListaCanciones listaCanciones) {
+		LinkedList<Cancion> listaBuena = (LinkedList<Cancion>) checkIntegridadCanciones(listaCanciones.getCanciones());
+		if(!listaBuena.containsAll(listaCanciones.getCanciones())) {
+			listaCanciones.setCanciones(listaBuena);
+			this.borrarListaCanciones(listaCanciones.getNombre());
+			this.crearListaCanciones(listaCanciones.getNombre(), listaBuena);
+		}
+		return listaCanciones;
+	}
+	
+	//Función que comprueba la existencia en disco de las canciones
+	//En caso de no existir las borra inmediatamente
+	//Devuelve la lista de las canciones existentes
+	private List<Cancion> checkIntegridadCanciones(List<Cancion> canciones) {
+		LinkedList<Cancion> cancionesEnRuta = new LinkedList<Cancion>();
+		for(Cancion c : canciones) {
+			File fileCancion = new File(c.getRutaFichero());
+			if(!fileCancion.exists()) {
+				System.out.println("No existe la canción definida en la ruta: " + fileCancion.getAbsolutePath());
+				try {
+					FactoriaDAO.getInstancia().getCancionDAO().deleteCancion(c);
+				} catch (DAOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				cancionesEnRuta.add(c);
+			}
+		}
+		return cancionesEnRuta;
 	}
 	
 	public Boolean isMediaPlayerPlaying(){

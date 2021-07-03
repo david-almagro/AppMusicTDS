@@ -68,6 +68,8 @@ public class Principal {
     private ArrayList<ListaCanciones> listaPlaylists;
     
 
+    
+
 	/**
 	 * Launch the application.
 	 */
@@ -271,6 +273,14 @@ public class Principal {
     	panel_Explorar_centro.add(btnBuscar, gbc_btnBuscar);
     	
     	JButton btnCancelar = new JButton("Cancelar");
+    	btnCancelar.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			//Vaciamos el primero modelo y su lista
+    			while (modelo.getRowCount() > 0) {
+    				modelo.removeRow(0);
+    			}
+    		}
+    	});
     	GridBagConstraints gbc_btnCancelar = new GridBagConstraints();
     	gbc_btnCancelar.insets = new Insets(0, 0, 5, 5);
     	gbc_btnCancelar.gridx = 3;
@@ -292,9 +302,12 @@ public class Principal {
       	btnBuscar.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
     			//Estilo musical 			
+    			String buscaTitulo = txtTitulo.getText().equals("Título") ? "" : txtTitulo.getText();
+    			String buscaInterprete = txtInterprete.getText().equals("Intérprete") ? "" : txtInterprete.getText();
+
     			musicPlayer_Explorar.setCanciones(
-    					controlador.busqueda(txtTitulo.getText(),
-											txtInterprete.getText(),
+    					controlador.busqueda(buscaTitulo,
+    										buscaInterprete,
 									    	comboBox_TipoCanciones.getSelectedItem().toString()));
     		}
     	});
@@ -445,9 +458,6 @@ public class Principal {
         table = new JTable(modelo);
         scrollPane_1.setViewportView(table);
 
-        
-        //TODO: Falta que se vacíen al cancelar o crear nueva lista
-
         BuscarNuevaLista.addActionListener(new ActionListener() {     										
     		public void actionPerformed(ActionEvent e) {
     			
@@ -460,6 +470,7 @@ public class Principal {
     			String titulo = textTituloNuevaLista.getText();
     			String interprete = textInterpreteNuevaLista.getText();
     			String estilo = comboBox_1.getSelectedItem().toString().toLowerCase();
+    			
     			List<Cancion> listaBusqueda = controlador.busqueda(titulo, interprete, estilo);
     	        for(Cancion c : listaBusqueda) {
     	        	Vector<String> v = new Vector<String>();
@@ -474,13 +485,7 @@ public class Principal {
     	});
         
         scrollPane_1.setViewportView(table);
-        
 
-        
-        //Creamos el model con las columnas y lo metemos en la tabla, posteriormente se añadirán con los >> y <<
-       // DefaultTableModel model2 = new DefaultTableModel();
-        //model2.addColumn("Título");
-        //model2.addColumn("Intérprete");
 
         scrollPane_2.setViewportView(miLista);
         
@@ -666,11 +671,14 @@ public class Principal {
     			
     			//listaPlaylistCanciones = new ArrayList<Cancion>();
 
-    			JOptionPane.showMessageDialog(frame, "Lista cargada", "Error, nombre de lista no válido", JOptionPane.INFORMATION_MESSAGE);
     			
     			int row = tablaPlaylists.getSelectedRow();
     			if(row>-1) {
+    				
+    				
+        			JOptionPane.showMessageDialog(frame, "Se cargó la lista correctamente", "Lista cargada", JOptionPane.INFORMATION_MESSAGE);
 	    			ListaCanciones lista = listaPlaylists.get(row);
+	    			lista = Controlador.getControlador().checkIntegridadListaCanciones(lista);
 	    			musicPlayer_listas.setCanciones(lista.getCanciones());    			
     			}
 

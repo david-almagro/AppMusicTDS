@@ -60,7 +60,7 @@ public class AdaptadorListaCancionesDAO implements IAdaptadorListaCancionesDAO{
 			for(String c : cancionesId.trim().split(" ")) {
 				System.out.println(c);
 				try { //lo metemos en la lista
-					if(!c.equals("")) {
+					if(!c.equals("") ) {
 						Cancion cancionBd = umu.tds.dao.FactoriaDAO.getInstancia().getCancionDAO().getCancion(Integer.parseInt(c));
 						if (cancionBd != null)
 							canciones.add(cancionBd);

@@ -36,7 +36,15 @@ public class ListaCanciones {
 		this.id = id;
 	}
 	
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
 	public void addCancion(Cancion cancion) {
 		canciones.add(cancion);
+	}
+	
+	public void setCanciones(LinkedList<Cancion> canciones) {
+		this.canciones = canciones;
 	}
 }
