@@ -39,7 +39,6 @@ public class Register {
 	private JLabel lblContrasenaCheck;
 	private JLabel lblExisteUsuario;
 	private JLabel lblExisteEmail;
-	private static final double precio = 5.00;
 
 	/**
 	 * Launch the application.

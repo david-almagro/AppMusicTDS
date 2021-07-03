@@ -95,9 +95,6 @@ public class MusicPlayer extends JPanel {
 					btnCentral.setIcon(new ImageIcon("resources\\iconos\\Stop.png"));
 					int selectedRow = table.getSelectedRow();
 
-					//TODO: en un futuro se pedirá "reproducción por id" al controlador
-					// La idea es tener los id escondidos dentro de la tabla.
-					// estas siguientes lineas están mal pero representan funcionalidad por ahora.
 					cont.reproducirCancionPorNombre( (String) table.getValueAt(selectedRow, 0));
 				}
 			}
@@ -119,19 +116,12 @@ public class MusicPlayer extends JPanel {
 			} 
 		));
 		
-		
-		/* Se esconde la tercera columna de la tabla para establecer la relación
-		 * dentro de la tabla entre canciones, artistas e Id de canciones.
-		 * Éste Id no tiene utilidad de cara al usuario final pero sí a nivel de implementación
-		 * para obtener el Id de una canción a partir de esa columna oculta.
-		 */
 		 table.removeColumn(table.getColumnModel().getColumn(2));
 
 		scrollPane.setViewportView(table);
 
 	}
 	
-	//TODO: esto no se si es necesario pero por ahora funciona
 	@Override
 	public Dimension getPreferredSize() {
 	    return new Dimension(500, 500);

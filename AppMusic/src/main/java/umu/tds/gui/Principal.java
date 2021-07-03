@@ -56,7 +56,6 @@ public class Principal {
 	private JFrame frame;
 	private JTextField txtTitulo;
 	private JTextField txtInterprete;
-	private String estilo;
 	private JTextField nombreNuevaLista;
 	private JTextField textInterpreteNuevaLista;
 	private JTextField textTituloNuevaLista;
@@ -106,6 +105,8 @@ public class Principal {
     		comboBox_TipoCanciones.addItem(tipoCancion);
     	}
 	}
+	
+
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -193,9 +194,7 @@ public class Principal {
 		
 		//Si el usuario es premium, desactivar botón de hacerse premium
 
-    	
-    	//Layerede Panel central
-
+    	//Layer de Panel central
 		JPanel panelCentral = new JPanel();
 		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
     	CardLayout cardLayout = new CardLayout();
@@ -293,7 +292,7 @@ public class Principal {
     	panel_Explorar_centro.add(btnCancelar, gbc_btnCancelar);
     	
     	MusicPlayer musicPlayer_Explorar = new MusicPlayer();
-    	musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); //TODO: tratar las listas de canciones bien, no así 
+    	musicPlayer_Explorar.setCanciones(controlador.getCancionesLocales()); 
     	
     	GridBagConstraints gbc_musicPlayer_Explorar = new GridBagConstraints();
     	gbc_musicPlayer_Explorar.gridwidth = 3;
@@ -511,7 +510,6 @@ public class Principal {
 	            modelo.addRow(v);
 	            modelo2.removeRow(row);
 
-
 	            //se saca de la misma posición de la lista
 	            listaSeleccion.add(listaSeleccion2.get(row)); //addLast el que cogemos de la posición "row"
 	            listaSeleccion2.remove(row);
@@ -638,47 +636,39 @@ public class Principal {
         gbc_musicPlayer_listas.gridx = 4;
         gbc_musicPlayer_listas.gridy = 2;
         panel_Listas.add(musicPlayer_listas, gbc_musicPlayer_listas);
-        
-                
         		
-                JButton btnCargarPlaylists = new JButton("Cargar");
-                GridBagConstraints gbc_btnCargarPlaylists = new GridBagConstraints();
-                gbc_btnCargarPlaylists.insets = new Insets(0, 0, 0, 5);
-                gbc_btnCargarPlaylists.gridx = 1;
-                gbc_btnCargarPlaylists.gridy = 7;
-                panel_Listas.add(btnCargarPlaylists, gbc_btnCargarPlaylists);
-                
-                JButton btnBorrarPlaylist = new JButton("Borrar");
-                btnBorrarPlaylist.addActionListener(new ActionListener() {
-                	public void actionPerformed(ActionEvent e) {
-            			
-            			int row = tablaPlaylists.getSelectedRow();
-            			if(row>-1) {
-        	    			ListaCanciones lista = listaPlaylists.get(row);
-        					int eliminacionLista = JOptionPane.showConfirmDialog(frame,"¿Borrar la lista \"" + lista.getNombre() +"\"?" ,"Borrar Lista", JOptionPane.YES_NO_CANCEL_OPTION);
-        					if(eliminacionLista == JOptionPane.OK_OPTION) {
-        						modeloLista.removeRow(row);
-        						Controlador.getControlador().borrarListaCanciones(lista.getNombre());
-        					}
-            			}
-            		}
-                });
-                
-                GridBagConstraints gbc_btnBorrarPlaylist = new GridBagConstraints();
-                gbc_btnBorrarPlaylist.insets = new Insets(0, 0, 0, 5);
-                gbc_btnBorrarPlaylist.gridx = 2;
-                gbc_btnBorrarPlaylist.gridy = 7;
-                panel_Listas.add(btnBorrarPlaylist, gbc_btnBorrarPlaylist);
-        btnCargarPlaylists.addActionListener(new ActionListener() {     										
-    		public void actionPerformed(ActionEvent e) {
-    			
-    			//listaPlaylistCanciones = new ArrayList<Cancion>();
-
+        JButton btnCargarPlaylists = new JButton("Cargar");
+        GridBagConstraints gbc_btnCargarPlaylists = new GridBagConstraints();
+        gbc_btnCargarPlaylists.insets = new Insets(0, 0, 0, 5);
+        gbc_btnCargarPlaylists.gridx = 1;
+        gbc_btnCargarPlaylists.gridy = 7;
+        panel_Listas.add(btnCargarPlaylists, gbc_btnCargarPlaylists);
+        
+        JButton btnBorrarPlaylist = new JButton("Borrar");
+        btnBorrarPlaylist.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
     			
     			int row = tablaPlaylists.getSelectedRow();
     			if(row>-1) {
-    				
-    				
+	    			ListaCanciones lista = listaPlaylists.get(row);
+					int eliminacionLista = JOptionPane.showConfirmDialog(frame,"¿Borrar la lista \"" + lista.getNombre() +"\"?" ,"Borrar Lista", JOptionPane.YES_NO_CANCEL_OPTION);
+					if(eliminacionLista == JOptionPane.OK_OPTION) {
+						modeloLista.removeRow(row);
+						Controlador.getControlador().borrarListaCanciones(lista.getNombre());
+					}
+    			}
+    		}
+        });
+                
+        GridBagConstraints gbc_btnBorrarPlaylist = new GridBagConstraints();
+        gbc_btnBorrarPlaylist.insets = new Insets(0, 0, 0, 5);
+        gbc_btnBorrarPlaylist.gridx = 2;
+        gbc_btnBorrarPlaylist.gridy = 7;
+        panel_Listas.add(btnBorrarPlaylist, gbc_btnBorrarPlaylist);
+        btnCargarPlaylists.addActionListener(new ActionListener() {     										
+    		public void actionPerformed(ActionEvent e) {
+    			int row = tablaPlaylists.getSelectedRow();
+    			if(row>-1) {
         			JOptionPane.showMessageDialog(frame, "Se cargó la lista correctamente", "Lista cargada", JOptionPane.INFORMATION_MESSAGE);
 	    			ListaCanciones lista = listaPlaylists.get(row);
 	    			lista = Controlador.getControlador().checkIntegridadListaCanciones(lista);
@@ -690,8 +680,6 @@ public class Principal {
 
         table = new JTable(modelo);
         scrollPane_1.setViewportView(table);
-        
-        
         
         //TOP10
     	JPanel panel_Top10 = new JPanel();
@@ -723,17 +711,17 @@ public class Principal {
     	
     	//BOTONERA
 		JToolBar toolBar = new JToolBar();
+		toolBar.setOrientation(SwingConstants.VERTICAL);
 		toolBar.setFloatable(false);
 		toolBar.setToolTipText("");
-		toolBar.setOrientation(SwingConstants.VERTICAL);
 		frame.getContentPane().add(toolBar, BorderLayout.WEST);
 		
 		JButton btnExplorar = new JButton("Explorar");
+		btnExplorar.setHorizontalAlignment(SwingConstants.LEADING);
 		btnExplorar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				cardLayout.show(panelCentral, "card_Explorar");
-				//TODO: Botón explorar
 			}
 		});
 		btnExplorar.setIcon(new ImageIcon("resources\\iconos\\Explorar.png"));
@@ -755,8 +743,7 @@ public class Principal {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				cardLayout.show(panelCentral, "panel_Reciente");
-		        musicPlayer_Recientes.setCanciones(controlador.getReciente().getCanciones()); //TODO: tratar bien las listas de canciones
-				//panel_CreacionLista.setVisible(false);
+		        musicPlayer_Recientes.setCanciones(controlador.getReciente().getCanciones());
 			}
 		});
 
@@ -774,7 +761,6 @@ public class Principal {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				cardLayout.show(panelCentral, "card_MisListas");
-				//panel_MisListas.setVisible(true);
 				panel_Listas.setVisible(true);
 				
     			while (modeloLista.getRowCount() > 0) {
@@ -788,12 +774,9 @@ public class Principal {
     	            modeloLista.addRow(v);
     	            listaPlaylists.add(l);
     	            //de esta forma tendrán el mismo orden y con el mismo índice
-
     	        }
     	        tablaPlaylists = new JTable(modeloLista);
     	        scrollPaneListas.setViewportView(tablaPlaylists);
-
-				
 			}
 		});
 		btnMisListas.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
@@ -808,22 +791,8 @@ public class Principal {
     				modelo.removeRow(0);
     			}
 				cardLayout.show(panelCentral, "card_Top10");
-				//panel_MisListas.setVisible(true);
-				//panel_Listas.setVisible(true);
 				List<Cancion> l = controlador.top10();
 				musicPlayer_Top10.setCanciones(l);
-				/*
-				List<Cancion> l = controlador.top10();
-				for(Cancion c:l) {
-		        	Vector<String> v = new Vector<String>();
-		        	v.add(c.getNombre());
-		        	v.add(String.valueOf(c.getNumReproducciones()));
-					modeloTop10.addRow(v);
-				}
-		        tablaTop10 = new JTable(modeloTop10);
-		        panel_Top10_centro.setViewportView(tablaTop10);
-				*/
-				
 			}
 		});
 		btnTop10.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
@@ -836,21 +805,13 @@ public class Principal {
 				try {
 					controlador.exportarPDF();
 					JOptionPane.showMessageDialog(frame, "PDF creado satisfactoriamente","Exportación a PDF realizada", JOptionPane.INFORMATION_MESSAGE);
-
 				} catch (FileNotFoundException | DocumentException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				//cardLayout.show(panelCentral, "card_PDF");
-				//panel_MisListas.setVisible(true);
-				//panel_Listas.setVisible(true);
-				
 			}
 		});
 		btnPDF.setIcon(new ImageIcon("resources\\iconos\\Mis_Listas.png"));
 		toolBar.add(btnPDF);
-		
-		
 		
 		if(controlador.getUser().isPremium())
 			btnHaztePremium.setEnabled(false);

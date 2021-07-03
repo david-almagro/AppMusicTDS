@@ -4,7 +4,6 @@ public class ListaRecientes extends ListaCanciones {
 
 	public ListaRecientes(String nombre) {
 		super(nombre);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

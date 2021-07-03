@@ -47,10 +47,6 @@ public class Login {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					//Borrar después, temporal para no tener que registrar cada vez
-					//Controlador.getControlador().registrar("d", "d",
-							//"a@gmail.com", "Juan", "Perico", "a");
-					
 					Login window = new Login();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -142,8 +138,6 @@ public class Login {
 		btnAceptar = new JButton("Aceptar");
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//boolean logueado = false;
-				//llamada al controlador, registrado = Controlador...
 				
 				boolean logueado = Controlador.getControlador().login(textUser.getText(), new String(passwordField.getPassword()));
 				if(!logueado)

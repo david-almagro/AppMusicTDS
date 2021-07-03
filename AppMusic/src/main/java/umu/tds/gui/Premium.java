@@ -52,10 +52,6 @@ public class Premium {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					//Borrar después, temporal para no tener que registrar cada vez
-					//Controlador.getControlador().registrar("d", "d",
-							//"a@gmail.com", "Juan", "Perico", "a");
-					
 					Premium window = new Premium();
 					window.frmCompraAppmusicPremium.setVisible(true);
 				} catch (Exception e) {
@@ -179,7 +175,6 @@ public class Premium {
 		gbc_lblNewLabel_5.gridy = 5;
 		panel_1.add(lblNewLabel_5, gbc_lblNewLabel_5);
 		
-		
 		lblNewLabel_2 = new JLabel("Precio final:");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_2.setForeground(Color.BLACK);
@@ -189,52 +184,48 @@ public class Premium {
 		gbc_lblNewLabel_2.gridx = 1;
 		gbc_lblNewLabel_2.gridy = 6;
 		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
-								
-								btnAceptar = new JButton("Aceptar");
-								btnAceptar.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-											Controlador.getControlador().hacerPremium();
-											JOptionPane.showMessageDialog(frmCompraAppmusicPremium, "¡Enhorabuena!\nAhora eres usuario premium","Pago completado", JOptionPane.INFORMATION_MESSAGE);
-											frmCompraAppmusicPremium.dispose();
-											Principal principal = new Principal();
-											principal.hacerVisible();
-										
-									}
-								});
-								
-								lblNewLabel_3 = new JLabel(String.valueOf(Controlador.getControlador().getDescuento(precio)));
-								lblNewLabel_3.setForeground(new Color(50, 205, 50));
-								lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-								GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-								gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-								gbc_lblNewLabel_3.gridx = 2;
-								gbc_lblNewLabel_3.gridy = 6;
-								panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
-								btnAceptar.setFont(new Font("Tahoma", Font.PLAIN, 16));
-								GridBagConstraints gbc_btnAceptar = new GridBagConstraints();
-								gbc_btnAceptar.anchor = GridBagConstraints.WEST;
-								gbc_btnAceptar.insets = new Insets(0, 0, 5, 5);
-								gbc_btnAceptar.gridx = 2;
-								gbc_btnAceptar.gridy = 8;
-								panel_1.add(btnAceptar, gbc_btnAceptar);
-								
-										btnCancelar = new JButton("Cancelar");
-										btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 16));
-										GridBagConstraints gbc_btnCancelar = new GridBagConstraints();
-										gbc_btnCancelar.insets = new Insets(0, 0, 5, 5);
-										gbc_btnCancelar.gridx = 3;
-										gbc_btnCancelar.gridy = 8;
-										panel_1.add(btnCancelar, gbc_btnCancelar);
-				btnCancelar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent ev) {
-						frmCompraAppmusicPremium.dispose();
-						Principal principal = new Principal();
-						principal.hacerVisible();
-					}
-				});
-		
-		
-		
+						
+		btnAceptar = new JButton("Aceptar");
+		btnAceptar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					Controlador.getControlador().hacerPremium();
+					JOptionPane.showMessageDialog(frmCompraAppmusicPremium, "¡Enhorabuena!\nAhora eres usuario premium","Pago completado", JOptionPane.INFORMATION_MESSAGE);
+					frmCompraAppmusicPremium.dispose();
+					Principal principal = new Principal();
+					principal.hacerVisible();
+				
+			}
+		});
+						
+		lblNewLabel_3 = new JLabel(String.valueOf(Controlador.getControlador().getDescuento(precio)));
+		lblNewLabel_3.setForeground(new Color(50, 205, 50));
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3.gridx = 2;
+		gbc_lblNewLabel_3.gridy = 6;
+		panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
+		btnAceptar.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		GridBagConstraints gbc_btnAceptar = new GridBagConstraints();
+		gbc_btnAceptar.anchor = GridBagConstraints.WEST;
+		gbc_btnAceptar.insets = new Insets(0, 0, 5, 5);
+		gbc_btnAceptar.gridx = 2;
+		gbc_btnAceptar.gridy = 8;
+		panel_1.add(btnAceptar, gbc_btnAceptar);
+						
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		GridBagConstraints gbc_btnCancelar = new GridBagConstraints();
+		gbc_btnCancelar.insets = new Insets(0, 0, 5, 5);
+		gbc_btnCancelar.gridx = 3;
+		gbc_btnCancelar.gridy = 8;
+		panel_1.add(btnCancelar, gbc_btnCancelar);
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ev) {
+				frmCompraAppmusicPremium.dispose();
+				Principal principal = new Principal();
+				principal.hacerVisible();
+			}
+		});
 	}
-
 }

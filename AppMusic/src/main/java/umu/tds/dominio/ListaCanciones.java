@@ -11,7 +11,6 @@ public class ListaCanciones {
 		this.nombre = nombre;
 		this.canciones = new LinkedList<Cancion>();
 		this.id = 0;
-		//Se le pasa una canción inicial?
 	}
 	
 	public ListaCanciones(String nombre, LinkedList<Cancion> canciones, int id) {

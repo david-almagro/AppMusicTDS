@@ -3,7 +3,6 @@ package umu.tds.dao;
 public class TDSFactoriaDAO extends FactoriaDAO {
 
 	public TDSFactoriaDAO() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -14,15 +13,10 @@ public class TDSFactoriaDAO extends FactoriaDAO {
 	@Override
 	public IAdaptadorUsuarioDAO getUsuarioDAO() {
 		return new AdaptadorUsuarioDAO();
-		//es abstracta ?
 	}
 
 	@Override
 	public IAdaptadorListaCancionesDAO getListaCancionesDAO() {
-		// TODO Auto-generated method stub
 		return new AdaptadorListaCancionesDAO();
 	}
-
-
-
 }

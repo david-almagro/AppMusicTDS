@@ -56,9 +56,7 @@ public class AdaptadorListaCancionesDAO implements IAdaptadorListaCancionesDAO{
 		
 		//Por cada id de canción asociado
 		if(cancionesId != null) {
-			System.out.println("AdaptadorListaCanciones::GetListaCanciones\n" + "lista cancion carga from Dao: ");
 			for(String c : cancionesId.trim().split(" ")) {
-				System.out.println(c);
 				try { //lo metemos en la lista
 					if(!c.equals("") ) {
 						Cancion cancionBd = umu.tds.dao.FactoriaDAO.getInstancia().getCancionDAO().getCancion(Integer.parseInt(c));
@@ -66,7 +64,6 @@ public class AdaptadorListaCancionesDAO implements IAdaptadorListaCancionesDAO{
 							canciones.add(cancionBd);
 					}
 				} catch (DAOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} //creamos objeto y devolvemos

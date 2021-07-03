@@ -19,8 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.h2.engine.UserAggregate;
-
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -69,7 +67,6 @@ public class Controlador implements CancionesListener{
 	private CargadorCanciones cargaCancionesXML = new CargadorCanciones();
 		
 	private Controlador() {
-		//necesitamos tener el factoria para registrar y eso
 		try {
 			factoriaDAO = FactoriaDAO.getInstancia();
 		} catch (DAOException e) {
@@ -77,12 +74,6 @@ public class Controlador implements CancionesListener{
 		}
 		cargaCancionesXML.addCancionListener(this);
 	}
-	
-	//No me acuerdo de donde me he sacado esta función
-	/*private void inicializarAdaptadores() {
-		AdaptadorUsuarioDAO adaptadorUsuario = new AdaptadorUsuarioDAO();
-		AdaptadorCancionDAO adaptadorCancion = new AdaptadorCancionDAO();
-	}*/
 
 	public static Controlador getControlador() {
 		if(controlador==null) controlador = new Controlador();
@@ -155,7 +146,6 @@ public class Controlador implements CancionesListener{
 		return true;
 	}
 
-	//está bien? basado en ejercicio 6 boletin 4
 	public List<Cancion> busqueda(String nombre, String interprete, String estilo){
 		
 		System.out.println("Busqueda || nombre: " + nombre + " || interprete: " + interprete + "  ||  estilo: " + estilo);
@@ -170,7 +160,6 @@ public class Controlador implements CancionesListener{
 	
 
 	public void reproducirCancion(Cancion cancion) { //placeholder que solo guarda en recientes
-		// TODO: esta línea da null pointer exception
 		user.addRecientes(cancion); //Cuando se reproduce una canción se añade a la lista de recientes
 		cancion.aumentarNumReproducciones();
 		
@@ -380,7 +369,6 @@ public class Controlador implements CancionesListener{
 	public void hacerPremium() {
 		this.factoriaDAO.getUsuarioDAO().hacerPremium(user.getId());
 		user.hacerPremium();
-		System.out.println("haciendo prmeimu");
 	}
 
 	

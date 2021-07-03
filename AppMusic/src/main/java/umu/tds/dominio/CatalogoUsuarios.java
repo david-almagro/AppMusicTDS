@@ -15,8 +15,6 @@ public class CatalogoUsuarios {
 	
 	private CatalogoUsuarios() {
 		mapaUsuarios = new HashMap<String, Usuario>();
-		
-		//try.. catch DAOException
 		try {
 			factoria = FactoriaDAO.getInstancia();
 			
@@ -24,10 +22,8 @@ public class CatalogoUsuarios {
 			
 			for(Usuario u : listaUsuariosDAO){
 				mapaUsuarios.put(u.getUser(),u);
-				//por id?
 			}
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -47,8 +43,7 @@ public class CatalogoUsuarios {
 		mapaUsuarios.put(usuario.getUser(),usuario);
 	}
 	
-	// ??? se puede ?
 	public HashMap<String, Usuario> getMapa() {
-		return new HashMap<String, Usuario>(mapaUsuarios); //se devuelve una copia
+		return new HashMap<String, Usuario>(mapaUsuarios); 
 	}
 }
