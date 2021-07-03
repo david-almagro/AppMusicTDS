@@ -13,7 +13,7 @@ public class CancionTest {
 	final String ESTILO = "estilo";
 	final String RUTAFICHERO = "rutafichero";
 
-	Cancion cancionTest1 = new Cancion( NOMBRE, INTERPRETE, ESTILO, RUTAFICHERO);
+	Cancion cancionTest1 = new Cancion( NOMBRE, INTERPRETE, ESTILO, RUTAFICHERO, 0, 0);
 
 
 
@@ -99,11 +99,11 @@ public class CancionTest {
 	
 	@Test
 	public final void testId() {
-		assertTrue(cancionTest1.getId() < 0);
+		assertFalse(cancionTest1.getId() < 0);
 	}
 	@Test
 	public final void testNumRepro() {
-		assertTrue(cancionTest1.getNumReproducciones() < 0);
+		assertFalse(cancionTest1.getNumReproducciones() < 0);
 	}
 
 }
