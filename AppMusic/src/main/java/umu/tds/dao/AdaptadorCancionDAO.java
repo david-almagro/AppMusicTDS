@@ -65,9 +65,9 @@ public class AdaptadorCancionDAO implements IAdaptadorCancionDAO {
 		if (numRepro != null) {
 			numReproducciones = Integer.parseInt(numRepro);
 		}
-		
+		if(id==0)
+			return null;
 		return new Cancion(nombre, interprete, estilo, rutaFichero, id, numReproducciones);
-		
 	}
 
 	@Override

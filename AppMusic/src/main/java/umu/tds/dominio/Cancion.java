@@ -9,6 +9,11 @@ public class Cancion {
 	private int id; 
 	
 	public Cancion(String nombre, String interprete, String estilo, String rutafichero) {
+		if(nombre == null || interprete == null ||  estilo == null ||  rutafichero == null)
+			throw new IllegalArgumentException("Canción ha recivido un valor null");
+		if(nombre.isEmpty() || interprete.isEmpty() ||  estilo.isEmpty() ||  rutafichero.isEmpty())
+			throw new IllegalArgumentException("Canción ha recivido un valor vacío");
+		
 		this.nombre = nombre;
 		this.interprete = interprete;
 		this.estilo = estilo;
@@ -19,6 +24,12 @@ public class Cancion {
 	
 	public Cancion(String nombre, String interprete, String estilo, String rutafichero, int id, int numReproducciones) {
 		this(nombre,interprete,estilo,rutafichero);
+
+		if(id < 0)
+			throw new IllegalArgumentException("Canción ha recibido Id negativo");
+		if(numReproducciones < 0)
+			throw new IllegalArgumentException("Canción ha recibido Número de reproducciones en negativo");
+		
 		this.numReproducciones = numReproducciones;
 		this.id = id;
 	}
